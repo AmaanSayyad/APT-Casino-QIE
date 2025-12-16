@@ -53,7 +53,7 @@ export default function Home() {
   const dispatch = useDispatch();
   const { userBalance, isLoading: isLoadingBalance } = useSelector((state) => state.balance);
   const notification = useNotification();
-  const { isConnected } = useWalletStatus();
+  const { isConnected, address } = useWalletStatus();
   
   // Somnia Game Logger
   const { logGame, isLogging, getExplorerUrl } = useSomniaGameLogger();
@@ -130,33 +130,53 @@ export default function Home() {
           : item
       ));
       
-      // Log game result to Somnia Testnet (non-blocking)
-      logGame({
-        gameType: 'WHEEL',
-        betAmount: betAmount.toString(),
-        result: {
-          winningSegment: historyItemId,
-          multiplier: actualMultiplier,
-          color: detectedColor
-        },
-        payout: winAmount.toString(),
-        entropyProof: {
-          requestId: entropyResult.entropyProof.requestId,
-          transactionHash: entropyResult.entropyProof.transactionHash
+      // Call log-game API to log to QIE Blockchain and mint NFT
+      if (address && entropyResult.entropyProof) {
+        try {
+          console.log('📝 Calling log-game API for Wheel...');
+          const response = await fetch('/api/log-game', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              gameType: 'WHEEL',
+              playerAddress: address,
+              betAmount: parseFloat(betAmount),
+              result: {
+                winningSegment: historyItemId,
+                multiplier: actualMultiplier,
+                color: detectedColor
+              },
+              payout: parseFloat(winAmount),
+              entropyProof: {
+                requestId: entropyResult.entropyProof.requestId,
+                transactionHash: entropyResult.entropyProof.transactionHash,
+                sequenceNumber: entropyResult.entropyProof.sequenceNumber
+              }
+            })
+          });
+
+          const apiResult = await response.json();
+          
+          if (apiResult.success) {
+            console.log('✅ Wheel game logged to QIE Blockchain:', apiResult);
+            
+            // Update game history with transaction IDs for tracking
+            setGameHistory(prev => prev.map(item => 
+              item.id === historyItemId 
+                ? { 
+                    ...item, 
+                    qieLogTransactionId: apiResult.transactions?.log?.id,
+                    nftTransactionId: apiResult.transactions?.nft?.id
+                  }
+                : item
+            ));
+          } else {
+            console.warn('⚠️ Failed to log Wheel game to QIE:', apiResult.error);
+          }
+        } catch (error) {
+          console.error('❌ Error calling log-game API:', error);
         }
-      }).then(txHash => {
-        if (txHash) {
-          console.log('✅ Wheel game logged to Somnia:', getExplorerUrl(txHash));
-          // Update game history with Somnia transaction hash
-          setGameHistory(prev => prev.map(item => 
-            item.id === historyItemId 
-              ? { ...item, somniaTxHash: txHash }
-              : item
-          ));
-        }
-      }).catch(error => {
-        console.warn('⚠️ Failed to log Wheel game to Somnia:', error);
-      });
+      }
       
       // Log on-chain via casino wallet (non-blocking)
       try {
@@ -246,7 +266,9 @@ export default function Home() {
             multiplier: `${actualMultiplier.toFixed(2)}x`,
             payout: winAmount.toFixed(5),
             result: 0,
-            color: detectedColor
+            color: detectedColor,
+            qieLogTxHash: null, // Will be updated after API call
+            nftTxHash: null // Will be updated after API call
           };
 
           // Add temporary entropy proof (will be updated by background process)

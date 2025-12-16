@@ -26,6 +26,7 @@ import AIAutoBetting from "./components/AIAutoBetting";
 import AISettingsModal from "./components/AISettingsModal";
 import pythEntropyService from '@/services/PythEntropyService';
 import { useSomniaGameLogger } from '@/hooks/useSomniaGameLogger';
+import useWalletStatus from '@/hooks/useWalletStatus';
 
 export default function Mines() {
   // Game State
@@ -220,54 +221,77 @@ export default function Mines() {
       
       console.log('✅ PYTH ENTROPY: Mines randomness generated:', entropyProof);
       
-      // Log game result to Somnia Testnet (non-blocking)
-      logGame({
-        gameType: 'MINES',
-        betAmount: (result.betAmount || 0).toString(),
-        result: {
-          minePositions: result.minePositions || [],
-          revealedPositions: result.revealedPositions || [],
-          hitMine: result.hitMine || false,
-          safeRevealed: result.safeRevealed || 0,
-          currentMultiplier: result.multiplier || 0
-        },
-        payout: (result.payout || 0).toString(),
-        entropyProof: {
-          requestId: entropyResult.entropyProof.requestId,
-          transactionHash: entropyResult.entropyProof.transactionHash
-        }
-      }).then(txHash => {
-        if (txHash) {
-          console.log('✅ Mines game logged to Somnia:', getExplorerUrl(txHash));
-          // Update game history with Somnia transaction hash
-          setGameHistory(prev => {
-            const updatedHistory = [...prev];
-            if (updatedHistory.length > 0) {
-              updatedHistory[0] = { ...updatedHistory[0], somniaTxHash: txHash };
-            }
-            return updatedHistory;
-          });
-        }
-      }).catch(error => {
-        console.warn('⚠️ Failed to log Mines game to Somnia:', error);
-      });
-      
     } catch (error) {
       console.error('❌ Error using Pyth Entropy for Mines game:', error);
     }
     
+    // Create history item with entropy proof
     const newHistoryItem = {
       id: Date.now(),
       mines: result.mines || 0,
-      bet: `${result.betAmount || '0.00000'} STT`,
+      bet: `${result.betAmount || '0.00000'} QIE`,
       outcome: result.won ? 'win' : 'loss',
-      payout: result.won ? `${result.payout || '0.00000'} STT` : '0.00000 STT',
+      payout: result.won ? `${result.payout || '0.00000'} QIE` : '0.00000 QIE',
       multiplier: result.won ? `${result.multiplier || '0.00'}x` : '0.00x',
       time: 'Just now',
-      entropyProof: entropyProof
+      entropyProof: entropyProof,
+      qieLogTxHash: null, // Will be updated after API call
+      nftTxHash: null // Will be updated after API call
     };
     
     setGameHistory(prev => [newHistoryItem, ...prev].slice(0, 50));
+    
+    // Call log-game API to log to QIE Blockchain and mint NFT
+    if (address && entropyProof) {
+      try {
+        console.log('📝 Calling log-game API for Mines...');
+        const response = await fetch('/api/log-game', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            gameType: 'MINES',
+            playerAddress: address,
+            betAmount: parseFloat(result.betAmount || 0),
+            result: {
+              minePositions: result.minePositions || [],
+              revealedPositions: result.revealedPositions || [],
+              hitMine: result.hitMine || false,
+              safeRevealed: result.safeRevealed || 0,
+              currentMultiplier: result.multiplier || 0
+            },
+            payout: parseFloat(result.payout || 0),
+            entropyProof: {
+              requestId: entropyProof.requestId,
+              transactionHash: entropyProof.transactionHash,
+              sequenceNumber: entropyProof.sequenceNumber
+            }
+          })
+        });
+
+        const apiResult = await response.json();
+        
+        if (apiResult.success) {
+          console.log('✅ Mines game logged to QIE Blockchain:', apiResult);
+          
+          // Update game history with transaction IDs for tracking
+          setGameHistory(prev => {
+            const updatedHistory = [...prev];
+            if (updatedHistory.length > 0 && updatedHistory[0].id === newHistoryItem.id) {
+              updatedHistory[0] = { 
+                ...updatedHistory[0], 
+                qieLogTransactionId: apiResult.transactions?.log?.id,
+                nftTransactionId: apiResult.transactions?.nft?.id
+              };
+            }
+            return updatedHistory;
+          });
+        } else {
+          console.warn('⚠️ Failed to log Mines game to QIE:', apiResult.error);
+        }
+      } catch (error) {
+        console.error('❌ Error calling log-game API:', error);
+      }
+    }
     
     // Fire-and-forget casino session log
     try {
@@ -275,11 +299,11 @@ export default function Mines() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          sessionId: result.entropyProof?.requestId || `mines_${Date.now()}`,
+          sessionId: entropyProof?.requestId || `mines_${Date.now()}`,
           gameType: 'MINES',
-          requestId: result.entropyProof?.requestId || `mines_request_${Date.now()}`,
+          requestId: entropyProof?.requestId || `mines_request_${Date.now()}`,
           valueMon: 0,
-          entropyProof: result.entropyProof
+          entropyProof: entropyProof
         })
       }).catch(() => {});
     } catch {}

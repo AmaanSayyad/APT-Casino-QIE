@@ -15,6 +15,7 @@ import { GiRollingDices, GiCardRandom, GiPokerHand } from "react-icons/gi";
 import { FaPercentage, FaBalanceScale, FaChartLine, FaCoins, FaTrophy, FaPlay, FaExternalLinkAlt } from "react-icons/fa";
 import pythEntropyService from '../../../services/PythEntropyService';
 import { useSomniaGameLogger } from '@/hooks/useSomniaGameLogger';
+import useWalletStatus from '@/hooks/useWalletStatus';
 
 export default function Plinko() {
   const userBalance = useSelector((state) => state.balance.userBalance);
@@ -29,6 +30,9 @@ export default function Plinko() {
   
   // Somnia Game Logger
   const { logGame, isLogging, getExplorerUrl } = useSomniaGameLogger();
+  
+  // Wallet connection
+  const { isConnected, address } = useWalletStatus();
 
   // Smooth scroll helper
   const scrollToElement = (elementId) => {
@@ -202,6 +206,7 @@ export default function Plinko() {
     console.log('🔍 handleBetHistoryChange called with:', newBetResult);
     
     // Use Pyth Entropy for randomness
+    let entropyProof = null;
     try {
       console.log('🎯 Using Pyth Entropy for Plinko randomness...');
       const randomData = await pythEntropyService.generateRandom('PLINKO', {
@@ -210,59 +215,80 @@ export default function Plinko() {
       });
       console.log('🎲 Plinko game completed with Pyth Entropy randomness:', randomData);
       
-      // Add Pyth Entropy info to the bet result
-      const enhancedBetResult = {
-        ...newBetResult,
-        entropyProof: {
-          requestId: randomData.entropyProof?.requestId,
-          sequenceNumber: randomData.entropyProof?.sequenceNumber,
-          randomValue: randomData.randomValue,
-          transactionHash: randomData.entropyProof?.transactionHash,
-          arbiscanUrl: randomData.entropyProof?.arbiscanUrl,
-          explorerUrl: randomData.entropyProof?.explorerUrl,
-          timestamp: randomData.entropyProof?.timestamp
-        },
-        timestamp: new Date().toISOString()
+      entropyProof = {
+        requestId: randomData.entropyProof?.requestId,
+        sequenceNumber: randomData.entropyProof?.sequenceNumber,
+        randomValue: randomData.randomValue,
+        transactionHash: randomData.entropyProof?.transactionHash,
+        arbiscanUrl: randomData.entropyProof?.arbiscanUrl,
+        explorerUrl: randomData.entropyProof?.explorerUrl,
+        timestamp: randomData.entropyProof?.timestamp
       };
-      
-      console.log('📝 Enhanced bet result:', enhancedBetResult);
-      setGameHistory(prev => [enhancedBetResult, ...prev].slice(0, 100)); // Keep up to last 100 entries
-      
-      // Log game result to Somnia Testnet (non-blocking)
-      logGame({
-        gameType: 'PLINKO',
-        betAmount: (newBetResult.betAmount || 0).toString(),
-        result: {
-          path: newBetResult.path || [],
-          finalBucket: newBetResult.bucket || 0,
-          multiplier: newBetResult.multiplier || 0
-        },
-        payout: (newBetResult.payout || 0).toString(),
-        entropyProof: {
-          requestId: randomData.entropyProof.requestId,
-          transactionHash: randomData.entropyProof.transactionHash
-        }
-      }).then(txHash => {
-        if (txHash) {
-          console.log('✅ Plinko game logged to Somnia:', getExplorerUrl(txHash));
-          // Update game history with Somnia transaction hash
-          setGameHistory(prev => {
-            const updatedHistory = [...prev];
-            if (updatedHistory.length > 0) {
-              updatedHistory[0] = { ...updatedHistory[0], somniaTxHash: txHash };
-            }
-            return updatedHistory;
-          });
-        }
-      }).catch(error => {
-        console.warn('⚠️ Failed to log Plinko game to Somnia:', error);
-      });
       
     } catch (error) {
       console.error('❌ Error using Pyth Entropy for Plinko game:', error);
-      
-      // Still add the bet result even if Pyth Entropy fails
-      setGameHistory(prev => [newBetResult, ...prev].slice(0, 100));
+    }
+    
+    // Add Pyth Entropy info to the bet result
+    const enhancedBetResult = {
+      ...newBetResult,
+      entropyProof: entropyProof,
+      timestamp: new Date().toISOString(),
+      qieLogTxHash: null, // Will be updated after API call
+      nftTxHash: null // Will be updated after API call
+    };
+    
+    console.log('📝 Enhanced bet result:', enhancedBetResult);
+    setGameHistory(prev => [enhancedBetResult, ...prev].slice(0, 100)); // Keep up to last 100 entries
+    
+    // Call log-game API to log to QIE Blockchain and mint NFT
+    if (address && entropyProof) {
+      try {
+        console.log('📝 Calling log-game API for Plinko...');
+        const response = await fetch('/api/log-game', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            gameType: 'PLINKO',
+            playerAddress: address,
+            betAmount: parseFloat(newBetResult.betAmount || 0),
+            result: {
+              path: newBetResult.path || [],
+              finalBucket: newBetResult.bucket || 0,
+              multiplier: newBetResult.multiplier || 0
+            },
+            payout: parseFloat(newBetResult.payout || 0),
+            entropyProof: {
+              requestId: entropyProof.requestId,
+              transactionHash: entropyProof.transactionHash,
+              sequenceNumber: entropyProof.sequenceNumber
+            }
+          })
+        });
+
+        const apiResult = await response.json();
+        
+        if (apiResult.success) {
+          console.log('✅ Plinko game logged to QIE Blockchain:', apiResult);
+          
+          // Update game history with transaction IDs for tracking
+          setGameHistory(prev => {
+            const updatedHistory = [...prev];
+            if (updatedHistory.length > 0 && updatedHistory[0].timestamp === enhancedBetResult.timestamp) {
+              updatedHistory[0] = { 
+                ...updatedHistory[0], 
+                qieLogTransactionId: apiResult.transactions?.log?.id,
+                nftTransactionId: apiResult.transactions?.nft?.id
+              };
+            }
+            return updatedHistory;
+          });
+        } else {
+          console.warn('⚠️ Failed to log Plinko game to QIE:', apiResult.error);
+        }
+      } catch (error) {
+        console.error('❌ Error calling log-game API:', error);
+      }
     }
   };
 

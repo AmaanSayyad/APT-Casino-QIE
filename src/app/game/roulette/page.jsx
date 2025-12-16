@@ -2036,6 +2036,9 @@ export default function GameRoulette() {
             source: 'Pyth Entropy'
           };
           
+          // Add QIE transaction tracking fields
+          newBet.qieLogTxHash = null;
+          newBet.nftTxHash = null;
           
           // Update betting history with entropy proof
           setBettingHistory(prev => {
@@ -2046,38 +2049,56 @@ export default function GameRoulette() {
             return updatedHistory;
           });
           
-          // Log game result to Somnia Testnet (non-blocking)
-          logGame({
-            gameType: 'ROULETTE',
-            betAmount: totalBetAmount.toString(),
-            result: {
-              winningNumber: winningNumber,
-              bets: allBets,
-              winningBets: winningBets,
-              losingBets: losingBets,
-              totalPayout: totalPayout,
-              netResult: netResult
-            },
-            payout: Math.max(0, netResult).toString(),
-            entropyProof: {
-              requestId: entropyResult.entropyProof.requestId,
-              transactionHash: entropyResult.entropyProof.transactionHash
-            }
-          }).then(txHash => {
-            if (txHash) {
-              console.log('✅ Roulette game logged to Somnia:', getExplorerUrl(txHash));
-              // Update betting history with Somnia transaction hash
-              setBettingHistory(prev => {
-                const updatedHistory = [...prev];
-                if (updatedHistory.length > 0) {
-                  updatedHistory[0] = { ...updatedHistory[0], somniaTxHash: txHash };
+          // Call log-game API to log to QIE Blockchain and mint NFT
+          if (address && entropyResult.entropyProof) {
+            fetch('/api/log-game', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                gameType: 'ROULETTE',
+                playerAddress: address,
+                betAmount: totalBetAmount,
+                result: {
+                  winningNumber: winningNumber,
+                  bets: allBets,
+                  winningBets: winningBets,
+                  losingBets: losingBets,
+                  totalPayout: totalPayout,
+                  netResult: netResult
+                },
+                payout: Math.max(0, netResult),
+                entropyProof: {
+                  requestId: entropyResult.entropyProof.requestId,
+                  transactionHash: entropyResult.entropyProof.transactionHash,
+                  sequenceNumber: entropyResult.entropyProof.sequenceNumber
                 }
-                return updatedHistory;
-              });
-            }
-          }).catch(error => {
-            console.warn('⚠️ Failed to log Roulette game to Somnia:', error);
-          });
+              })
+            })
+            .then(response => response.json())
+            .then(apiResult => {
+              if (apiResult.success) {
+                console.log('✅ Roulette game logged to QIE Blockchain:', apiResult);
+                
+                // Update betting history with transaction IDs for tracking
+                setBettingHistory(prev => {
+                  const updatedHistory = [...prev];
+                  if (updatedHistory.length > 0 && updatedHistory[0].id === newBet.id) {
+                    updatedHistory[0] = { 
+                      ...updatedHistory[0], 
+                      qieLogTransactionId: apiResult.transactions?.log?.id,
+                      nftTransactionId: apiResult.transactions?.nft?.id
+                    };
+                  }
+                  return updatedHistory;
+                });
+              } else {
+                console.warn('⚠️ Failed to log Roulette game to QIE:', apiResult.error);
+              }
+            })
+            .catch(error => {
+              console.error('❌ Error calling log-game API:', error);
+            });
+          }
           
           // Fire-and-forget explorer log via casino wallet
           try {
