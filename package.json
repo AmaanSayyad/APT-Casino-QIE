@@ -10,6 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "fund-treasury": "node scripts/fund-treasury.js",
     "deploy:move": "node move-contracts/scripts/deploy.js --network=testnet",
     "deploy:plinko": "node move-contracts/scripts/deploy.js --network=testnet --dir=move-contracts/plinko-only",
@@ -89,6 +91,7 @@
     "wagmi": "^2.16.4"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.28.5",
     "@chainlink/contracts": "^0.8.0",
     "@nomicfoundation/hardhat-chai-matchers": "^2.1.0",
     "@nomicfoundation/hardhat-ethers": "^3.1.0",
@@ -103,6 +106,7 @@
     "@types/pg": "^8.10.0",
     "hardhat": "^2.26.3",
     "hardhat-gas-reporter": "^1.0.10",
+    "jest": "^30.2.0",
     "solidity-coverage": "^0.8.16",
     "tailwind-scrollbar": "^3.0.4",
     "ts-node": "^10.9.2",
