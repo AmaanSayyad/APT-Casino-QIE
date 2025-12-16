@@ -8,7 +8,7 @@
  */
 
 import { createPublicClient, http, decodeEventLog } from 'viem';
-import somniaTestnetConfig from '../config/somniaTestnetConfig.js';
+import { qieTestnetConfig } from '../config/qieTestnetConfig.js';
 import {
   GAME_RESULT_EVENT_SCHEMA,
   GAME_TYPE_NAMES,
@@ -35,8 +35,8 @@ export class FallbackStreamsService {
   async initialize(gameLoggerAddress) {
     try {
       this.publicClient = createPublicClient({
-        chain: somniaTestnetConfig,
-        transport: http(somniaTestnetConfig.rpcUrls.default.http[0])
+        chain: qieTestnetConfig,
+        transport: http(qieTestnetConfig.rpcUrls.default.http[0])
       });
 
       this.gameLoggerAddress = gameLoggerAddress;

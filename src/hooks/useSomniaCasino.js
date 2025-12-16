@@ -2,10 +2,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAccount, useBalance, usePublicClient, useWalletClient } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
-import { SOMNIA_CONTRACTS, SOMNIA_NETWORKS } from '@/config/contracts';
+import { QIE_CONTRACTS, QIE_NETWORKS } from '@/config/contracts';
 
-const TREASURY_ADDRESS = SOMNIA_CONTRACTS[SOMNIA_NETWORKS.TESTNET].treasury;
-const GAME_LOGGER_ADDRESS = SOMNIA_CONTRACTS[SOMNIA_NETWORKS.TESTNET].gameLogger;
+const TREASURY_ADDRESS = QIE_CONTRACTS[QIE_NETWORKS.TESTNET].treasury;
+const GAME_LOGGER_ADDRESS = QIE_CONTRACTS[QIE_NETWORKS.TESTNET].gameLogger;
 
 const formatSTTAmount = (amount) => {
   try {

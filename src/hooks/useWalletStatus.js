@@ -33,7 +33,7 @@ export function WalletStatusProvider({ children }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!isDev) return;
+    if (!isDev || typeof window === 'undefined') return;
 
     const savedState = localStorage.getItem('dev-wallet-state');
     if (savedState === 'connected') {
@@ -74,7 +74,9 @@ export function WalletStatusProvider({ children }) {
 
   const connectWallet = useCallback(async () => {
     if (isDev) {
-      localStorage.setItem('dev-wallet-state', 'connected');
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('dev-wallet-state', 'connected');
+      }
       setDevWallet({
         isConnected: true,
         address: '0x1234...dev',
@@ -98,7 +100,9 @@ export function WalletStatusProvider({ children }) {
 
   const disconnectWallet = useCallback(async () => {
     if (isDev) {
-      localStorage.setItem('dev-wallet-state', 'disconnected');
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('dev-wallet-state', 'disconnected');
+      }
       setDevWallet({
         isConnected: false,
         address: null,
@@ -146,13 +150,17 @@ export function WalletStatusProvider({ children }) {
     console.log('=== ENVIRONMENT ===');
     console.log('Is Dev:', isDev);
     console.log('Dev Wallet:', devWallet);
-    console.log('=== LOCAL STORAGE ===');
-    console.log('Dev wallet state:', localStorage.getItem('dev-wallet-state'));
-    console.log('Wagmi storage:', localStorage.getItem('aptcasino.wallet'));
-    console.log('=== WINDOW ETHEREUM ===');
-    console.log('Window ethereum exists:', !!window.ethereum);
-    console.log('Window ethereum connected:', window.ethereum?.isConnected?.());
-    console.log('Window ethereum accounts:', window.ethereum?.selectedAddress);
+    
+    // Only access localStorage and window in browser environment
+    if (typeof window !== 'undefined') {
+      console.log('=== LOCAL STORAGE ===');
+      console.log('Dev wallet state:', localStorage.getItem('dev-wallet-state'));
+      console.log('Wagmi storage:', localStorage.getItem('aptcasino.wallet'));
+      console.log('=== WINDOW ETHEREUM ===');
+      console.log('Window ethereum exists:', !!window.ethereum);
+      console.log('Window ethereum connected:', typeof window.ethereum?.isConnected === 'function' ? window.ethereum.isConnected() : 'N/A');
+      console.log('Window ethereum accounts:', window.ethereum?.selectedAddress);
+    }
   }, [currentStatus, connected, account, network, isDev, devWallet]);
 
   return (

@@ -7,7 +7,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { somniaStreamsService } from '../services/SomniaStreamsService';
 import { useWalletClient } from 'wagmi';
-import { SOMNIA_CONTRACTS, SOMNIA_NETWORKS } from '../config/contracts';
+import { QIE_CONTRACTS, QIE_NETWORKS } from '../config/contracts';
 
 /**
  * useSomniaStreams Hook
@@ -63,7 +63,7 @@ export function useSomniaStreams({
       isConnectingRef.current = true;
       
       // Get GameLogger address from config
-      const gameLoggerAddress = SOMNIA_CONTRACTS[SOMNIA_NETWORKS.TESTNET]?.gameLogger;
+      const gameLoggerAddress = QIE_CONTRACTS[QIE_NETWORKS.TESTNET]?.gameLogger;
       
       if (!gameLoggerAddress) {
         throw new Error('GameLogger address not found in config. Check NEXT_PUBLIC_SOMNIA_GAME_LOGGER_ADDRESS in .env');

@@ -3,15 +3,12 @@
 /**
  * Global Notification System for Game Results
  * 
- * Displays real-time notifications for game results across all connected clients
- * via Somnia Data Streams integration.
- * 
- * Requirements: 5.2, 5.3, 5.4, 5.5
+ * Simple notification system for displaying game results.
+ * No longer uses live streaming - notifications are handled locally.
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { useSomniaStreams } from '../hooks/useSomniaStreams';
 import { formatEther } from 'viem';
 
 /**
@@ -231,60 +228,18 @@ const NotificationsContainer = ({ notifications, onDismiss }) => {
   );
 };
 
-/**
- * Connection Status Indicator
- */
-const ConnectionStatus = ({ isConnected, reconnectionStatus }) => {
-  const [isMounted, setIsMounted] = useState(false);
-  
-  useEffect(() => {
-    setIsMounted(true);
-    return () => setIsMounted(false);
-  }, []);
-  
-  if (!isMounted || typeof window === 'undefined') return null;
-  
-  // Don't show if connected and not reconnecting
-  if (isConnected && !reconnectionStatus.isReconnecting) return null;
-  
-  return createPortal(
-    <div className="fixed bottom-4 right-4 z-[9999]">
-      <div className={`
-        px-4 py-2 rounded-lg shadow-lg border backdrop-blur-md
-        ${isConnected 
-          ? 'bg-yellow-600/90 border-yellow-400' 
-          : 'bg-red-600/90 border-red-400'
-        }
-      `}>
-        <div className="flex items-center space-x-2">
-          <div className={`
-            w-2 h-2 rounded-full animate-pulse
-            ${isConnected ? 'bg-yellow-200' : 'bg-red-200'}
-          `}></div>
-          <span className="text-white text-sm font-medium">
-            {reconnectionStatus.isReconnecting 
-              ? `Reconnecting... (${reconnectionStatus.attempts}/${reconnectionStatus.maxAttempts})`
-              : 'Connecting to live feed...'
-            }
-          </span>
-        </div>
-      </div>
-    </div>,
-    document.body
-  );
-};
+// Connection status component removed - no longer needed for QIE
 
 /**
  * Global Notification System Component
  * 
- * Main component that manages the notification queue and integrates with Somnia Data Streams
+ * Simplified notification system for QIE - no live streaming
  */
 export function GlobalNotificationSystem() {
   const [notifications, setNotifications] = useState([]);
-  const [showConnectionStatus, setShowConnectionStatus] = useState(true);
   
   /**
-   * Handle incoming game result events
+   * Handle incoming game result events (for future local notifications)
    */
   const handleGameResult = useCallback((gameResult) => {
     console.log('🎰 New game result notification received:', {
@@ -320,69 +275,13 @@ export function GlobalNotificationSystem() {
   }, []);
   
   /**
-   * Handle errors from Somnia Streams
-   */
-  const handleError = useCallback((error) => {
-    console.error('❌ Somnia Streams error:', error);
-  }, []);
-  
-  /**
-   * Initialize Somnia Streams subscription
-   */
-  const {
-    isConnected,
-    isInitialized,
-    error,
-    reconnectionStatus
-  } = useSomniaStreams({
-    onGameResult: handleGameResult,
-    onError: handleError,
-    autoConnect: true
-  });
-  
-  /**
    * Dismiss a notification
    */
   const dismissNotification = useCallback((id) => {
     setNotifications(prev => prev.filter(n => n.id !== id));
   }, []);
   
-  /**
-   * Hide connection status after successful connection
-   */
-  useEffect(() => {
-    if (isConnected && !reconnectionStatus.isReconnecting) {
-      const timer = setTimeout(() => {
-        setShowConnectionStatus(false);
-      }, 3000);
-      
-      return () => clearTimeout(timer);
-    } else {
-      setShowConnectionStatus(true);
-    }
-  }, [isConnected, reconnectionStatus.isReconnecting]);
-  
-  /**
-   * Log connection status changes
-   */
-  useEffect(() => {
-    if (isInitialized) {
-      console.log('✅ Global Notification System initialized');
-    }
-  }, [isInitialized]);
-  
-  useEffect(() => {
-    if (isConnected) {
-      console.log('✅ Global Notification System connected to live feed');
-    }
-  }, [isConnected]);
-  
-  useEffect(() => {
-    if (error) {
-      console.error('❌ Global Notification System error:', error);
-    }
-  }, [error]);
-  
+  // For QIE, we don't need live streaming - just return the notifications container
   return (
     <>
       {/* Game result notifications */}
@@ -390,14 +289,6 @@ export function GlobalNotificationSystem() {
         notifications={notifications}
         onDismiss={dismissNotification}
       />
-      
-      {/* Connection status indicator */}
-      {showConnectionStatus && (
-        <ConnectionStatus 
-          isConnected={isConnected}
-          reconnectionStatus={reconnectionStatus}
-        />
-      )}
     </>
   );
 }

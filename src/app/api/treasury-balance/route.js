@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { ethers, JsonRpcProvider, Wallet } from 'ethers';
-import { somniaTestnetConfig } from '@/config/somniaTestnetConfig';
-import { SOMNIA_CONTRACTS, SOMNIA_NETWORKS } from '@/config/contracts';
+import { qieTestnetConfig } from '@/config/qieTestnetConfig';
+import { QIE_CONTRACTS, QIE_NETWORKS } from '@/config/contracts';
 import PYTH_ENTROPY_CONFIG from '@/config/pythEntropy.js';
 
 /**
@@ -18,8 +18,8 @@ import PYTH_ENTROPY_CONFIG from '@/config/pythEntropy.js';
  */
 export async function GET() {
   try {
-    // Use Somnia Testnet for treasury operations
-    const SOMNIA_RPC_URL = somniaTestnetConfig.rpcUrls.default.http[0];
+    // Use QIE Testnet for treasury operations
+    const QIE_RPC_URL = qieTestnetConfig.rpcUrls.default.http[0];
     const SOMNIA_TREASURY_PRIVATE_KEY = process.env.SOMNIA_TESTNET_TREASURY_PRIVATE_KEY || process.env.TREASURY_PRIVATE_KEY;
     
     if (!SOMNIA_TREASURY_PRIVATE_KEY) {
@@ -39,8 +39,8 @@ export async function GET() {
     const balance = await provider.getBalance(treasuryWallet.address);
     const balanceInSTT = ethers.formatEther(balance);
     
-    // Get Somnia treasury contract address
-    const treasuryContractAddress = SOMNIA_CONTRACTS[SOMNIA_NETWORKS.TESTNET].treasury;
+    // Get QIE treasury contract address
+    const treasuryContractAddress = QIE_CONTRACTS[QIE_NETWORKS.TESTNET].treasury;
     
     // Get entropy network (still on Arbitrum Sepolia)
     const entropyNetwork = 'arbitrum-sepolia';
@@ -57,10 +57,10 @@ export async function GET() {
         currency: 'STT'
       },
       network: {
-        name: somniaTestnetConfig.name,
-        chainId: somniaTestnetConfig.id,
-        rpcUrl: SOMNIA_RPC_URL,
-        explorer: somniaTestnetConfig.blockExplorers.default.url
+        name: qieTestnetConfig.name,
+        chainId: qieTestnetConfig.id,
+        rpcUrl: QIE_RPC_URL,
+        explorer: qieTestnetConfig.blockExplorers.default.url
       },
       entropy: {
         network: entropyConfig.name,

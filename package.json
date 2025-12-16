@@ -93,6 +93,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.28.5",
+    "@babel/preset-react": "^7.28.5",
     "@chainlink/contracts": "^0.8.0",
     "@nomicfoundation/hardhat-chai-matchers": "^2.1.0",
     "@nomicfoundation/hardhat-ethers": "^3.1.0",

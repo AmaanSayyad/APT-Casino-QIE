@@ -1,7 +1,7 @@
 module.exports = {
   testEnvironment: 'node',
   transform: {
-    '^.+\\.jsx?$': 'babel-jest',
+    '^.+\\.jsx?$': './jest-babel-transformer.js',
   },
   moduleFileExtensions: ['js', 'jsx'],
   testMatch: [
