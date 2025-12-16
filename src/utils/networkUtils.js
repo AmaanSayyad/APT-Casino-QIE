@@ -59,8 +59,8 @@ export const SOMNIA_TESTNET_CONFIG = {
   chainId: '0xc488', // 50312 in hex
   chainName: 'Somnia Testnet',
   nativeCurrency: {
-    name: 'Somnia Testnet',
-    symbol: 'STT',
+    name: 'QIE Testnet',
+    symbol: 'QIE',
     decimals: 18,
   },
   rpcUrls: ['https://dream-rpc.somnia.network'],
@@ -101,7 +101,7 @@ export const isSomniaTestnet = (chainId) => {
 
 export const formatMonBalance = (balance, decimals = 5) => {
   const numBalance = parseFloat(balance || '0');
-  return `${numBalance.toFixed(decimals)} STT`;
+  return `${numBalance.toFixed(decimals)} QIE`;
 };
 
 export const getSomniaTestnetExplorerUrl = (txHash) => {

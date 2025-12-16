@@ -1,4 +1,4 @@
-import { somniaGameLogger } from './SomniaGameLogger';
+import { qieGameLogger } from './QIEGameLogger';
 import { ethers } from 'ethers';
 
 /**
@@ -12,7 +12,7 @@ import { ethers } from 'ethers';
  * @param {Object} params - Game logging parameters
  * @returns {Promise<string|null>} Transaction hash or null if logging fails
  */
-export async function logGameToSomnia({
+export async function logGameToQIE({
   gameType,
   playerAddress,
   betAmount,
@@ -57,7 +57,7 @@ export async function logGameToSomnia({
 
     const data = await response.json();
 
-    console.log('✅ Game logged to Somnia:', {
+    console.log('✅ Game logged to QIE:', {
       gameType,
       txHash: data.txHash,
       explorerUrl: data.explorerUrl
@@ -66,14 +66,14 @@ export async function logGameToSomnia({
     return data.txHash;
 
   } catch (error) {
-    console.error('❌ Failed to log game to Somnia:', error);
+    console.error('❌ Failed to log game to QIE:', error);
     // Don't throw - logging failure shouldn't break the game
     return null;
   }
 }
 
 /**
- * Get player's game history from Somnia
+ * Get player's game history from QIE
  * @param {string} playerAddress - Player's address
  * @param {number} limit - Maximum number of games to fetch
  * @param {Object} provider - Ethers provider
@@ -87,10 +87,10 @@ export async function getPlayerGameHistory(playerAddress, limit = 50, provider =
 
     // Initialize logger with provider if provided
     if (provider) {
-      somniaGameLogger.setProviderAndSigner(provider, null);
+      qieGameLogger.setProviderAndSigner(provider, null);
     }
 
-    const history = await somniaGameLogger.getGameHistory(playerAddress, limit);
+    const history = await qieGameLogger.getGameHistory(playerAddress, limit);
     
     return history;
 
@@ -114,10 +114,10 @@ export async function getPlayerGameCount(playerAddress, provider = null) {
 
     // Initialize logger with provider if provided
     if (provider) {
-      somniaGameLogger.setProviderAndSigner(provider, null);
+      qieGameLogger.setProviderAndSigner(provider, null);
     }
 
-    const count = await somniaGameLogger.getPlayerGameCount(playerAddress);
+    const count = await qieGameLogger.getPlayerGameCount(playerAddress);
     
     return count;
 
@@ -136,10 +136,10 @@ export async function getGameLoggerStats(provider = null) {
   try {
     // Initialize logger with provider if provided
     if (provider) {
-      somniaGameLogger.setProviderAndSigner(provider, null);
+      qieGameLogger.setProviderAndSigner(provider, null);
     }
 
-    const stats = await somniaGameLogger.getStats();
+    const stats = await qieGameLogger.getStats();
     
     return stats;
 
@@ -169,10 +169,10 @@ export function subscribeToGameResults(callback, provider = null) {
   try {
     // Initialize logger with provider if provided
     if (provider) {
-      somniaGameLogger.setProviderAndSigner(provider, null);
+      qieGameLogger.setProviderAndSigner(provider, null);
     }
 
-    return somniaGameLogger.onGameResultLogged(callback);
+    return qieGameLogger.onGameResultLogged(callback);
 
   } catch (error) {
     console.error('❌ Failed to subscribe to game results:', error);
@@ -186,11 +186,11 @@ export function subscribeToGameResults(callback, provider = null) {
  * @returns {string} Explorer URL
  */
 export function getTransactionExplorerUrl(txHash) {
-  return somniaGameLogger.getTransactionUrl(txHash);
+  return qieGameLogger.getTransactionUrl(txHash);
 }
 
 export default {
-  logGameToSomnia,
+  logGameToQIE,
   getPlayerGameHistory,
   getPlayerGameCount,
   getGameLoggerStats,

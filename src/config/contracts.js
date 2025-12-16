@@ -9,9 +9,7 @@ export const QIE_NETWORKS = {
   TESTNET: 'qie-testnet',
 };
 
-export const SOMNIA_NETWORKS = {
-  TESTNET: 'somnia-testnet',
-};
+
 
 // Arbitrum Network URLs
 export const ARBITRUM_NETWORK_URLS = {
@@ -38,23 +36,17 @@ export const QIE_NETWORK_URLS = {
   [QIE_NETWORKS.TESTNET]: "https://rpc1testnet.qie.digital/",
 };
 
-// Somnia Network URLs
-export const SOMNIA_NETWORK_URLS = {
-  [SOMNIA_NETWORKS.TESTNET]: "https://dream-rpc.somnia.network",
-};
+
 
 // QIE Explorer URLs
 export const QIE_EXPLORER_URLS = {
   [QIE_NETWORKS.TESTNET]: "https://testnet.qie.digital",
 };
 
-// Somnia Explorer URLs
-export const SOMNIA_EXPLORER_URLS = {
-  [SOMNIA_NETWORKS.TESTNET]: "https://shannon-explorer.somnia.network",
-};
+
 
 // Default network (can be changed via environment variable)
-export const DEFAULT_NETWORK = SOMNIA_NETWORKS.TESTNET;
+export const DEFAULT_NETWORK = QIE_NETWORKS.TESTNET;
 
 // QIE Contract Addresses
 export const QIE_CONTRACTS = {
@@ -65,14 +57,7 @@ export const QIE_CONTRACTS = {
   }
 };
 
-// Somnia Contract Addresses
-export const SOMNIA_CONTRACTS = {
-  [SOMNIA_NETWORKS.TESTNET]: {
-    treasury: process.env.NEXT_PUBLIC_SOMNIA_TREASURY_ADDRESS || "0xacA996A4d49e7Ed42dA68a20600F249BE6d024A4",
-    gameLogger: process.env.NEXT_PUBLIC_SOMNIA_GAME_LOGGER_ADDRESS || "0x649A1a3cf745d60C98C12f3c404E09bdBb4151db",
-    streams: process.env.NEXT_PUBLIC_SOMNIA_STREAMS_ADDRESS || "0x6AB397FF662e42312c003175DCD76EfF69D048Fc"
-  }
-};
+
 
 // Casino Module Configuration
 export const CASINO_MODULE_CONFIG = {
@@ -119,12 +104,7 @@ export const TOKEN_CONFIG = {
     decimals: 18,
     type: "native"
   },
-  STT: {
-    name: "Somnia Testnet Token",
-    symbol: "STT",
-    decimals: 18,
-    type: "native"
-  }
+
 };
 
 // Network Information
@@ -155,12 +135,7 @@ export const NETWORK_INFO = {
     nativeCurrency: TOKEN_CONFIG.QIE,
     explorer: QIE_EXPLORER_URLS[QIE_NETWORKS.TESTNET]
   },
-  [SOMNIA_NETWORKS.TESTNET]: {
-    name: "Somnia Testnet",
-    chainId: 50312,
-    nativeCurrency: TOKEN_CONFIG.STT,
-    explorer: SOMNIA_EXPLORER_URLS[SOMNIA_NETWORKS.TESTNET]
-  }
+
 };
 
 // Export default configuration
@@ -173,10 +148,6 @@ export default {
   QIE_NETWORK_URLS,
   QIE_EXPLORER_URLS,
   QIE_CONTRACTS,
-  SOMNIA_NETWORKS,
-  SOMNIA_NETWORK_URLS,
-  SOMNIA_EXPLORER_URLS,
-  SOMNIA_CONTRACTS,
   DEFAULT_NETWORK,
   CASINO_MODULE_CONFIG,
   TOKEN_CONFIG,

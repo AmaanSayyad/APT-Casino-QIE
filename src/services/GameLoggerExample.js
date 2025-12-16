@@ -10,22 +10,22 @@
 // ============================================================================
 
 /*
-import { useSomniaGameLogger } from '@/hooks/useSomniaGameLogger';
+import { useQIEGameLogger } from '@/hooks/useQIEGameLogger';
 
 function RouletteGame() {
-  const { logGame, isLogging, lastLogTxHash, getExplorerUrl } = useSomniaGameLogger();
+  const { logGame, isLogging, lastLogTxHash, getExplorerUrl } = useQIEGameLogger();
   
   const handleGameComplete = async (gameResult) => {
     // After game completes and you have the result
     const txHash = await logGame({
       gameType: 'ROULETTE',
-      betAmount: gameResult.betAmount,  // in STT (e.g., "0.1")
+      betAmount: gameResult.betAmount,  // in QIE (e.g., "0.1")
       result: {
         winningNumber: gameResult.winningNumber,
         bets: gameResult.bets,
         // ... other result data
       },
-      payout: gameResult.totalPayout,  // in STT (e.g., "0.5")
+      payout: gameResult.totalPayout,  // in QIE (e.g., "0.5")
       entropyProof: {
         requestId: gameResult.entropyProof?.requestId,
         transactionHash: gameResult.entropyProof?.transactionHash
@@ -69,14 +69,14 @@ async function logGameResult(gameData) {
   const txHash = await logGameToSomnia({
     gameType: 'MINES',
     playerAddress,
-    betAmount: '0.05',  // in STT
+    betAmount: '0.05',  // in QIE
     result: {
       minePositions: [1, 5, 12, 18, 23],
       revealedPositions: [0, 2, 3],
       hitMine: false,
       // ... other result data
     },
-    payout: '0.15',  // in STT
+    payout: '0.15',  // in QIE
     entropyProof: {
       requestId: '0x123...',
       transactionHash: '0xabc...'
@@ -182,8 +182,8 @@ function GameHistory() {
       {history.map(game => (
         <div key={game.logId}>
           <p>Game: {game.gameType}</p>
-          <p>Bet: {game.betAmount} STT</p>
-          <p>Payout: {game.payout} STT</p>
+          <p>Bet: {game.betAmount} QIE</p>
+          <p>Payout: {game.payout} QIE</p>
           <p>Time: {new Date(game.timestamp * 1000).toLocaleString()}</p>
           <a href={game.explorerUrl} target="_blank">
             View on Somnia Explorer
@@ -227,7 +227,7 @@ function GlobalGameFeed() {
       {recentGames.map(game => (
         <div key={game.transactionHash}>
           <p>{game.player} played {game.gameType}</p>
-          <p>Bet: {game.betAmount} STT → Payout: {game.payout} STT</p>
+          <p>Bet: {game.betAmount} QIE → Payout: {game.payout} QIE</p>
         </div>
       ))}
     </div>
@@ -250,9 +250,9 @@ To integrate Somnia Game Logger in your game:
 
 3. After game completes, call logGame():
    - Pass gameType: 'ROULETTE' | 'MINES' | 'WHEEL' | 'PLINKO'
-   - Pass betAmount as string (in STT)
+   - Pass betAmount as string (in QIE)
    - Pass result object with game-specific data
-   - Pass payout as string (in STT)
+   - Pass payout as string (in QIE)
    - Pass entropyProof with requestId and transactionHash from Pyth Entropy
 
 4. Handle the result:

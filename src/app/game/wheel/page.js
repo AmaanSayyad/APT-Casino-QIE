@@ -536,8 +536,8 @@ export default function Home() {
     // Sample statistics
     const gameStatistics = {
       totalBets: '1,856,342',
-      totalVolume: '8.3M STT',
-      maxWin: '243,500 STT'
+      totalVolume: '8.3M QIE',
+      maxWin: '243,500 QIE'
     };
     
     return (

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAccount, useWalletClient, usePublicClient } from 'wagmi';
 import { ethers } from 'ethers';
 import { 
-  logGameToSomnia, 
+  logGameToQIE, 
   getPlayerGameHistory, 
   getPlayerGameCount,
   getGameLoggerStats,
@@ -11,10 +11,10 @@ import {
 } from '../services/GameLoggerIntegration';
 
 /**
- * React hook for Somnia Game Logger
+ * React hook for QIE Game Logger
  * Provides easy access to game logging functionality
  */
-export function useSomniaGameLogger() {
+export function useQIEGameLogger() {
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
@@ -44,7 +44,7 @@ export function useSomniaGameLogger() {
   }, [publicClient, walletClient, isConnected]);
 
   /**
-   * Log a game result to Somnia Testnet
+   * Log a game result to QIE Testnet
    */
   const logGame = useCallback(async ({
     gameType,
@@ -68,7 +68,7 @@ export function useSomniaGameLogger() {
         throw new Error('Signer not available');
       }
 
-      const txHash = await logGameToSomnia({
+      const txHash = await logGameToQIE({
         gameType,
         playerAddress: address,
         betAmount,
@@ -185,5 +185,4 @@ export function useSomniaGameLogger() {
   };
 }
 
-export default useSomniaGameLogger;
-
+export default useQIEGameLogger;
