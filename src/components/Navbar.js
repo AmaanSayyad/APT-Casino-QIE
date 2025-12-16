@@ -19,12 +19,12 @@ import { useGlobalWalletPersistence } from '../hooks/useGlobalWalletPersistence'
 
 
 import { useNotification } from './NotificationSystem';
-import { SOMNIA_CONTRACTS, SOMNIA_NETWORKS } from '../config/contracts';
-import { somniaTestnetConfig } from '../config/somniaTestnetConfig';
+import { QIE_CONTRACTS, QIE_NETWORKS } from '../config/contracts';
+import { qieTestnetConfig } from '../config/qieTestnetConfig';
 
 // Treasury configuration
 const TREASURY_CONFIG = {
-  ADDRESS: SOMNIA_CONTRACTS[SOMNIA_NETWORKS.TESTNET].treasury
+  ADDRESS: QIE_CONTRACTS[QIE_NETWORKS.TESTNET].treasury
 };
 // Enhanced UserBalanceSystem with deposit functionality
 const UserBalanceSystem = {
@@ -95,8 +95,8 @@ const MOCK_SEARCH_RESULTS = {
     { id: 'game4', name: 'Plinko', path: '/game/plinko', type: 'Popular' },
   ],
   tournaments: [
-    { id: 'tournament1', name: 'High Roller Tournament', path: '/tournaments/high-roller', prize: '10,000 STT' },
-    { id: 'tournament2', name: 'Weekend Battle', path: '/tournaments/weekend-battle', prize: '5,000 STT' },
+    { id: 'tournament1', name: 'High Roller Tournament', path: '/tournaments/high-roller', prize: '10,000 QIE' },
+    { id: 'tournament2', name: 'Weekend Battle', path: '/tournaments/weekend-battle', prize: '5,000 QIE' },
   ],
   pages: [
     { id: 'page1', name: 'Bank', path: '/bank', description: 'Deposit and withdraw funds' },
@@ -186,7 +186,7 @@ export default function Navbar() {
     {
       id: '1',
       title: 'Balance Updated',
-      message: 'Your STT balance has been updated',
+      message: 'Your QIE balance has been updated',
       isRead: false,
       time: '2 min ago'
     },
@@ -366,8 +366,8 @@ export default function Navbar() {
 
     try {
       setIsWithdrawing(true);
-      const balanceInStt = parseFloat(userBalance || '0');
-      if (balanceInStt <= 0) {
+      const balanceInQie = parseFloat(userBalance || '0');
+      if (balanceInQie <= 0) {
         notification.error('No balance to withdraw');
         return;
       }
@@ -384,7 +384,7 @@ export default function Navbar() {
         },
         body: JSON.stringify({
           userAddress: address,
-          amount: balanceInStt
+          amount: balanceInQie
         })
       });
 
@@ -406,7 +406,7 @@ export default function Navbar() {
       const txHash = result?.transactionHash || 'Unknown';
       const txDisplay = txHash !== 'Unknown' ? `${txHash.slice(0, 8)}...` : 'Pending';
       
-      notification.success(`Withdrawal transaction sent! ${balanceInStt.toFixed(5)} STT will be transferred. TX: ${txDisplay}`);
+      notification.success(`Withdrawal transaction sent! ${balanceInQie.toFixed(5)} QIE will be transferred. TX: ${txDisplay}`);
       
       // Close the modal
       setShowBalanceModal(false);
@@ -448,17 +448,17 @@ export default function Navbar() {
     const MAX_DEPOSIT = 100;
     
     if (amount < MIN_DEPOSIT) {
-      notification.error(`Minimum deposit amount is ${MIN_DEPOSIT} STT`);
+      notification.error(`Minimum deposit amount is ${MIN_DEPOSIT} QIE`);
       return;
     }
     
     if (amount > MAX_DEPOSIT) {
-      notification.error(`Maximum deposit amount is ${MAX_DEPOSIT} STT`);
+      notification.error(`Maximum deposit amount is ${MAX_DEPOSIT} QIE`);
       return;
     }
 
     setIsDepositing(true);
-    console.log('🚀 Starting deposit process for:', amount, 'STT');
+    console.log('🚀 Starting deposit process for:', amount, 'QIE');
     try {
       console.log('Depositing to house balance:', { address: address, amount });
       
@@ -471,62 +471,62 @@ export default function Navbar() {
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
       const userAccount = accounts[0];
       
-      // Check if user is on Somnia Testnet network
+      // Check if user is on QIE Testnet network
       const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-      const expectedChainId = '0x' + somniaTestnetConfig.id.toString(16); // Convert to hex
+      const expectedChainId = '0x' + qieTestnetConfig.id.toString(16); // Convert to hex
       
       console.log('🔍 Current chain ID:', chainId);
       console.log('🔍 Expected chain ID:', expectedChainId);
       
       if (chainId !== expectedChainId) {
         console.log('🔄 Need to switch network...');
-        // Try to switch to Somnia Testnet
+        // Try to switch to QIE Testnet
         try {
-          console.log('🔄 Attempting to switch to Somnia Testnet...');
+          console.log('🔄 Attempting to switch to QIE Testnet...');
           await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
             params: [{ chainId: expectedChainId }],
           });
-          console.log('✅ Successfully switched to Somnia Testnet');
+          console.log('✅ Successfully switched to QIE Testnet');
         } catch (switchError) {
           console.log('⚠️ Switch error:', switchError);
-          // If Somnia Testnet is not added, add it
+          // If QIE Testnet is not added, add it
           if (switchError.code === 4902) {
-            console.log('🔧 Network not found, adding Somnia Testnet...');
+            console.log('🔧 Network not found, adding QIE Testnet...');
             try {
               await window.ethereum.request({
                 method: 'wallet_addEthereumChain',
                 params: [{
                   chainId: expectedChainId,
-                  chainName: somniaTestnetConfig.name,
-                  nativeCurrency: somniaTestnetConfig.nativeCurrency,
-                  rpcUrls: [somniaTestnetConfig.rpcUrls.default.http[0]],
-                  blockExplorerUrls: [somniaTestnetConfig.blockExplorers.default.url]
+                  chainName: qieTestnetConfig.name,
+                  nativeCurrency: qieTestnetConfig.nativeCurrency,
+                  rpcUrls: [qieTestnetConfig.rpcUrls.default.http[0]],
+                  blockExplorerUrls: [qieTestnetConfig.blockExplorers.default.url]
                 }]
               });
-              console.log('✅ Successfully added Somnia Testnet network');
+              console.log('✅ Successfully added QIE Testnet network');
               
               // Try to switch again after adding
               await window.ethereum.request({
                 method: 'wallet_switchEthereumChain',
                 params: [{ chainId: expectedChainId }],
               });
-              console.log('✅ Successfully switched to Somnia Testnet after adding');
+              console.log('✅ Successfully switched to QIE Testnet after adding');
             } catch (addError) {
               console.error('❌ Failed to add network:', addError);
-              throw new Error(`Failed to add Somnia Testnet network: ${addError.message}`);
+              throw new Error(`Failed to add QIE Testnet network: ${addError.message}`);
             }
           } else {
             console.error('❌ Switch error:', switchError);
-            throw new Error(`Please switch to ${somniaTestnetConfig.name} network. Error: ${switchError.message}`);
+            throw new Error(`Please switch to ${qieTestnetConfig.name} network. Error: ${switchError.message}`);
           }
         }
       } else {
         console.log('✅ Already on correct network');
       }
       
-      // Casino treasury address from Somnia contracts config
-      const TREASURY_ADDRESS = SOMNIA_CONTRACTS[SOMNIA_NETWORKS.TESTNET].treasury;
+      // Casino treasury address from QIE contracts config
+      const TREASURY_ADDRESS = QIE_CONTRACTS[QIE_NETWORKS.TESTNET].treasury;
       
       // Convert amount to Wei (18 decimals)
       const amountWei = BigInt(Math.floor(amount * 1e18)).toString();
@@ -596,7 +596,7 @@ export default function Navbar() {
         // Don't fail the deposit if API call fails - balance is already updated
       }
       
-      notification.success(`Successfully deposited ${amount} STT to casino treasury! TX: ${txHash.slice(0, 10)}...`);
+      notification.success(`Successfully deposited ${amount} QIE to casino treasury! TX: ${txHash.slice(0, 10)}...`);
       
       setDepositAmount("");
       
@@ -1016,7 +1016,7 @@ export default function Navbar() {
                   <div className="flex items-center space-x-2">
                     <span className="text-xs text-gray-300">Balance:</span>
                     <span className="text-sm text-green-300 font-medium">
-                      {isLoadingBalance ? 'Loading...' : `${parseFloat(userBalance || '0').toFixed(5)} STT`}
+                      {isLoadingBalance ? 'Loading...' : `${parseFloat(userBalance || '0').toFixed(5)} QIE`}
                     </span>
                     <button
                       onClick={() => setShowBalanceModal(true)}
@@ -1122,7 +1122,7 @@ export default function Navbar() {
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm text-gray-300">House Balance:</span>
                       <span className="text-sm text-green-300 font-medium">
-                      {isLoadingBalance ? 'Loading...' : `${parseFloat(userBalance || '0').toFixed(5)} STT`}
+                      {isLoadingBalance ? 'Loading...' : `${parseFloat(userBalance || '0').toFixed(5)} QIE`}
                     </span>
                     </div>
                     <button
@@ -1182,13 +1182,13 @@ export default function Navbar() {
               <div className="mb-4 p-3 bg-gradient-to-r from-green-900/20 to-green-800/10 rounded-lg border border-green-800/30">
                 <span className="text-sm text-gray-300">Current Balance:</span>
                 <div className="text-lg text-green-300 font-bold">
-                  {isLoadingBalance ? 'Loading...' : `${parseFloat(userBalance || '0').toFixed(5)} STT`}
+                  {isLoadingBalance ? 'Loading...' : `${parseFloat(userBalance || '0').toFixed(5)} QIE`}
                 </div>
               </div>
               
               {/* Deposit Section */}
               <div className="mb-6">
-                <h4 className="text-sm font-medium text-white mb-2">Deposit STT to Casino Treasury</h4>
+                <h4 className="text-sm font-medium text-white mb-2">Deposit QIE to Casino Treasury</h4>
                 <div className="text-xs text-gray-400 mb-2">
                   Treasury: {TREASURY_CONFIG.ADDRESS.slice(0, 10)}...{TREASURY_CONFIG.ADDRESS.slice(-8)}
                 </div>
@@ -1197,7 +1197,7 @@ export default function Navbar() {
                     type="number"
                     value={depositAmount}
                     onChange={(e) => setDepositAmount(e.target.value)}
-                    placeholder="Enter STT amount"
+                    placeholder="Enter QIE amount"
                     className="flex-1 px-3 py-2 bg-gray-800/50 border border-gray-600/50 rounded text-white placeholder-gray-400 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/25"
                     min="0"
                     step="0.00000001"
@@ -1224,7 +1224,7 @@ export default function Navbar() {
                   </button>
                 </div>
                 <p className="text-xs text-gray-400 mt-1">
-                  Transfer STT from your wallet to house balance for gaming
+                  Transfer QIE from your wallet to house balance for gaming
                 </p>
                 {/* Quick Deposit Buttons */}
                 <div className="flex gap-1 mt-2">
@@ -1235,7 +1235,7 @@ export default function Navbar() {
                       className="flex-1 px-2 py-1 text-xs bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors"
                       disabled={isDepositing}
                     >
-                      {amount} STT
+                      {amount} QIE
                     </button>
                   ))}
                 </div>
@@ -1244,7 +1244,7 @@ export default function Navbar() {
 
               {/* Withdraw Section */}
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-white mb-2">Withdraw STT</h4>
+                <h4 className="text-sm font-medium text-white mb-2">Withdraw QIE</h4>
                 <button
                   onClick={handleWithdraw}
                   disabled={!isConnected || parseFloat(userBalance || '0') <= 0 || isWithdrawing}
@@ -1256,7 +1256,7 @@ export default function Navbar() {
                       Processing...
                     </>
                   ) : isConnected ? (
-                    parseFloat(userBalance || '0') > 0 ? 'Withdraw All STT' : 'No Balance'
+                    parseFloat(userBalance || '0') > 0 ? 'Withdraw All QIE' : 'No Balance'
                   ) : 'Connect Wallet'}
                   {isConnected && parseFloat(userBalance || '0') > 0 && !isWithdrawing && (
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1266,7 +1266,7 @@ export default function Navbar() {
                 </button>
                 {isConnected && parseFloat(userBalance || '0') > 0 && (
                   <p className="text-xs text-gray-400 mt-1 text-center">
-                    Withdraw {parseFloat(userBalance || '0').toFixed(5)} STT to your wallet
+                    Withdraw {parseFloat(userBalance || '0').toFixed(5)} QIE to your wallet
                   </p>
                 )}
               </div>

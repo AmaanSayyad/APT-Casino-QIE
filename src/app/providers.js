@@ -9,7 +9,7 @@ import { NotificationProvider } from '@/components/NotificationSystem';
 import WalletConnectionGuard from '@/components/WalletConnectionGuard';
 import { ThemeProvider } from 'next-themes';
 import { WagmiProvider, createConfig, http } from 'wagmi';
-import { somniaTestnet } from '@/config/chains';
+import { qieTestnet } from '@/config/chains';
 import { RainbowKitProvider, getDefaultConfig, connectorsForWallets } from '@rainbow-me/rainbowkit';
 import { 
   metaMaskWallet,
@@ -108,14 +108,14 @@ export default function Providers({ children }) {
   console.log('🔧 Providers mounting...');
   console.log('🔧 Project ID: 226b43b703188d269fb70d02c107c34e');
 
-  // RainbowKit configuration for Somnia Testnet
+  // RainbowKit configuration for QIE Testnet
   let config;
   
   try {
     config = getDefaultConfig({
       appName: 'APT Casino',
       projectId: '226b43b703188d269fb70d02c107c34e',
-      chains: [somniaTestnet],
+      chains: [qieTestnet],
       ssr: true,
     });
     console.log('🔧 Config created with getDefaultConfig:', config);
@@ -153,9 +153,9 @@ export default function Providers({ children }) {
 
     config = createConfig({
       connectors,
-      chains: [somniaTestnet],
+      chains: [qieTestnet],
       transports: {
-        [somniaTestnet.id]: http(),
+        [qieTestnet.id]: http(),
       },
       ssr: true,
     });
