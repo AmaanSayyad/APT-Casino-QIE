@@ -12,10 +12,19 @@ const WheelHistory = ({ gameHistory = [] }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
 
-   // Open Somnia Testnet Explorer link for transaction hash
-   const openSomniaTestnetExplorer = (hash) => {
+   // Open QIE Testnet Explorer link for transaction hash
+   const openQIETestnetExplorer = (hash) => {
     if (hash && hash !== 'unknown') {
-      const explorerUrl = `https://shannon-explorer.somnia.network/tx/${hash}`;
+      const explorerUrl = `https://testnet.qie.digital/tx/${hash}`;
+      window.open(explorerUrl, '_blank');
+    }
+  };
+
+  // Open QIE NFT Explorer link
+  const openQIENFTExplorer = (tokenId) => {
+    if (tokenId) {
+      const nftContractAddress = process.env.NEXT_PUBLIC_QIE_GAME_NFT_ADDRESS;
+      const explorerUrl = `https://testnet.qie.digital/token/${nftContractAddress}/${tokenId}`;
       window.open(explorerUrl, '_blank');
     }
   };
@@ -164,7 +173,7 @@ const WheelHistory = ({ gameHistory = [] }) => {
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap'
               }}>
-                {totalVolume.toFixed(5)} STT
+                {totalVolume.toFixed(5)} QIE
               </Typography>
               <Box 
                 sx={{ 
@@ -200,7 +209,7 @@ const WheelHistory = ({ gameHistory = [] }) => {
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap'
               }}>
-                {biggestWin.toFixed(5)} STT
+                {biggestWin.toFixed(5)} QIE
               </Typography>
               <FaTrophy color="#FFA500" />
             </Box>
@@ -463,7 +472,7 @@ const WheelHistory = ({ gameHistory = [] }) => {
                   borderBottom: '1px solid rgba(104, 29, 219, 0.2)'
                 }}
               >
-                Entropy Proof
+                Blockchain Links
               </TableCell>
             </TableRow>
           </TableHead>
@@ -520,7 +529,7 @@ const WheelHistory = ({ gameHistory = [] }) => {
                           whiteSpace: 'nowrap'
                         }}
                       >
-                            {item.betAmount} STT
+                            {item.betAmount} QIE
                       </Typography>
                       <Image src="/coin.png" width={16} height={16} alt="coin" />
                     </Box>
@@ -551,7 +560,7 @@ const WheelHistory = ({ gameHistory = [] }) => {
                           whiteSpace: 'nowrap'
                         }}
                       >
-                            {item.payout} STT
+                            {item.payout} QIE
                       </Typography>
                       <Image src="/coin.png" width={16} height={16} alt="coin" />
                     </Box>
@@ -570,7 +579,7 @@ const WheelHistory = ({ gameHistory = [] }) => {
                       borderBottom: '1px solid rgba(104, 29, 219, 0.1)'
                     }}
                   >
-                    {item.entropyProof || item.somniaTxHash ? (
+                    {item.entropyProof || item.qieTxHash || item.nftTokenId ? (
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <Chip 
@@ -592,13 +601,13 @@ const WheelHistory = ({ gameHistory = [] }) => {
                               }
                             }}
                           />
-                          {item.somniaTxHash && (
+                          {item.qieTxHash && (
                             <Button
-                              onClick={() => openSomniaTestnetExplorer(item.somniaTxHash)}
+                              onClick={() => openQIETestnetExplorer(item.qieTxHash)}
                               size="small"
                               startIcon={<FaExternalLinkAlt size={10} />}
                               sx={{ 
-                                color: '#8B2398',
+                                color: '#1983FF',
                                 fontSize: '0.7rem',
                                 minWidth: 'auto',
                                 p: 0,
@@ -608,7 +617,26 @@ const WheelHistory = ({ gameHistory = [] }) => {
                                 }
                               }}
                             >
-                              Somnia
+                              QIE
+                            </Button>
+                          )}
+                          {item.nftTokenId && (
+                            <Button
+                              onClick={() => openQIENFTExplorer(item.nftTokenId)}
+                              size="small"
+                              startIcon={<FaExternalLinkAlt size={10} />}
+                              sx={{ 
+                                color: '#14D854',
+                                fontSize: '0.7rem',
+                                minWidth: 'auto',
+                                p: 0,
+                                '&:hover': {
+                                  backgroundColor: 'transparent',
+                                  textDecoration: 'underline',
+                                }
+                              }}
+                            >
+                              NFT
                             </Button>
                           )}
                           {item.entropyProof?.transactionHash && (
@@ -632,7 +660,7 @@ const WheelHistory = ({ gameHistory = [] }) => {
                           )}
                         </Box>
                         <Typography variant="caption" color="rgba(255,255,255,0.5)">
-                          {item.somniaTxHash ? 'Game logged on Somnia' : 'Pyth Entropy'}
+                          {item.qieTxHash ? 'Game logged on QIE' : 'Pyth Entropy'}
                         </Typography>
                       </Box>
                     ) : (

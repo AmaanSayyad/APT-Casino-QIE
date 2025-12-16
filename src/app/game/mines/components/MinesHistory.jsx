@@ -11,10 +11,19 @@ const MinesHistory = ({ gameHistory = [], userStats = {} }) => {
   const [sortField, setSortField] = useState(null);
   const [sortDirection, setSortDirection] = useState('asc');
 
-  // Open Somnia Testnet Explorer link for transaction hash
-  const openSomniaTestnetExplorer = (hash) => {
+  // Open QIE Testnet Explorer link for transaction hash
+  const openQIETestnetExplorer = (hash) => {
     if (hash && hash !== 'unknown') {
-      const explorerUrl = `https://shannon-explorer.somnia.network/tx/${hash}`;
+      const explorerUrl = `https://testnet.qie.digital/tx/${hash}`;
+      window.open(explorerUrl, '_blank');
+    }
+  };
+
+  // Open QIE NFT Explorer link
+  const openQIENFTExplorer = (tokenId) => {
+    if (tokenId) {
+      const nftContractAddress = process.env.NEXT_PUBLIC_QIE_GAME_NFT_ADDRESS;
+      const explorerUrl = `https://testnet.qie.digital/token/${nftContractAddress}/${tokenId}`;
       window.open(explorerUrl, '_blank');
     }
   };
@@ -241,7 +250,7 @@ const MinesHistory = ({ gameHistory = [], userStats = {} }) => {
           <div 
             className="flex items-center cursor-pointer hover:text-white/90 transition-colors text-white/70"
           >
-            Entropy Explorer
+            Blockchain Links
           </div>
         </div>
         
@@ -308,19 +317,28 @@ const MinesHistory = ({ gameHistory = [], userStats = {} }) => {
                 <span>{game.time}</span>
               </div>
               <div className="text-white/70 flex items-center justify-center">
-                {game.entropyProof ? (
+                {game.entropyProof || game.qieTxHash || game.nftTokenId ? (
                   <div className="flex flex-col gap-1 items-center">
                     <div className="text-xs text-gray-300 font-mono text-center">
                       <div className="text-yellow-400 font-bold">{game.entropyProof.sequenceNumber && game.entropyProof.sequenceNumber !== '0' ? String(game.entropyProof.sequenceNumber) : ''}</div>
                     </div>
                     <div className="flex gap-1">
-                      {game.somniaTxHash && (
+                      {game.qieTxHash && (
                         <button
-                          onClick={() => openSomniaTestnetExplorer(game.somniaTxHash)}
-                          className="flex items-center gap-1 px-2 py-1 bg-[#8B2398]/10 border border-[#8B2398]/30 rounded text-[#8B2398] text-xs hover:bg-[#8B2398]/20 transition-colors"
+                          onClick={() => openQIETestnetExplorer(game.qieTxHash)}
+                          className="flex items-center gap-1 px-2 py-1 bg-[#1983FF]/10 border border-[#1983FF]/30 rounded text-[#1983FF] text-xs hover:bg-[#1983FF]/20 transition-colors"
                         >
                           <FaExternalLinkAlt size={8} />
-                          Somnia
+                          QIE
+                        </button>
+                      )}
+                      {game.nftTokenId && (
+                        <button
+                          onClick={() => openQIENFTExplorer(game.nftTokenId)}
+                          className="flex items-center gap-1 px-2 py-1 bg-[#14D854]/10 border border-[#14D854]/30 rounded text-[#14D854] text-xs hover:bg-[#14D854]/20 transition-colors"
+                        >
+                          <FaExternalLinkAlt size={8} />
+                          NFT
                         </button>
                       )}
                       {game.entropyProof?.transactionHash && (

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Box, Typography, Paper, Tabs, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, CircularProgress, Fade } from '@mui/material';
 import { FaHistory, FaChartLine, FaFire, FaExclamationCircle, FaCoins, FaInfoCircle, FaTrophy, FaDice, FaExternalLinkAlt } from 'react-icons/fa';
 
-// Utility function to format STT amounts with proper decimal precision
+// Utility function to format QIE amounts with proper decimal precision
 const formatMONAmount = (amount) => {
   if (typeof amount !== 'number') {
     amount = parseFloat(amount) || 0;
@@ -250,10 +250,19 @@ const RouletteHistory = ({ bettingHistory = [] }) => {
     return redNumbers.includes(num) ? '#d82633' : '#333'; // Red or black
   };
 
-  // Open Somnia Testnet Explorer link for transaction hash
-  const openSomniaTestnetExplorer = (hash) => {
+  // Open QIE Testnet Explorer link for transaction hash
+  const openQIETestnetExplorer = (hash) => {
     if (hash && hash !== 'unknown') {
-      const explorerUrl = `https://shannon-explorer.somnia.network/tx/${hash}`;
+      const explorerUrl = `https://testnet.qie.digital/tx/${hash}`;
+      window.open(explorerUrl, '_blank');
+    }
+  };
+
+  // Open QIE NFT Explorer link
+  const openQIENFTExplorer = (tokenId) => {
+    if (tokenId) {
+      const nftContractAddress = process.env.NEXT_PUBLIC_QIE_GAME_NFT_ADDRESS;
+      const explorerUrl = `https://testnet.qie.digital/token/${nftContractAddress}/${tokenId}`;
       window.open(explorerUrl, '_blank');
     }
   };
@@ -375,7 +384,7 @@ const RouletteHistory = ({ bettingHistory = [] }) => {
                       <TableCell align="center">Amount</TableCell>
                       <TableCell align="center">Result</TableCell>
                       <TableCell align="right">Payout</TableCell>
-                      <TableCell align="center">Entropy Explorer</TableCell>
+                      <TableCell align="center">Blockchain Links</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -476,7 +485,7 @@ const RouletteHistory = ({ bettingHistory = [] }) => {
                             )}
                           </Box>
                         </TableCell>
-                        <TableCell align="center">{formatMONAmount(bet.amount || bet.totalBetAmount || 0)} STT</TableCell>
+                        <TableCell align="center">{formatMONAmount(bet.amount || bet.totalBetAmount || 0)} QIE</TableCell>
                         <TableCell align="center">
                           <Box 
                             sx={{ 
@@ -512,13 +521,13 @@ const RouletteHistory = ({ bettingHistory = [] }) => {
                             {bet.win ? (
                               <>
                                 <FaCoins size={12} color="#14D854" />
-                                +{formatMONAmount(bet.payout || bet.netResult || 0)} STT
+                                +{formatMONAmount(bet.payout || bet.netResult || 0)} QIE
                               </>
                             ) : '-'}
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
-                          {bet.entropyProof || bet.somniaTxHash ? (
+                          {bet.entropyProof || bet.qieTxHash || bet.nftTokenId ? (
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, alignItems: 'center' }}>
                               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25, alignItems: 'center' }}>
                                 <Typography variant="caption" sx={{ color: '#FFC107', fontFamily: 'monospace', fontWeight: 'bold' }}>
@@ -526,9 +535,9 @@ const RouletteHistory = ({ bettingHistory = [] }) => {
                                 </Typography>
                               </Box>
                               <Box sx={{ display: 'flex', gap: 0.5 }}>
-                                {bet.somniaTxHash && (
+                                {bet.qieTxHash && (
                                   <Box
-                                    onClick={() => openSomniaTestnetExplorer(bet.somniaTxHash)}
+                                    onClick={() => openQIETestnetExplorer(bet.qieTxHash)}
                                     sx={{
                                       display: 'flex',
                                       alignItems: 'center',
@@ -536,24 +545,24 @@ const RouletteHistory = ({ bettingHistory = [] }) => {
                                       cursor: 'pointer',
                                       padding: '2px 6px',
                                       borderRadius: '4px',
-                                      backgroundColor: 'rgba(139, 35, 152, 0.1)',
-                                      border: '1px solid rgba(139, 35, 152, 0.3)',
+                                      backgroundColor: 'rgba(25, 131, 255, 0.1)',
+                                      border: '1px solid rgba(25, 131, 255, 0.3)',
                                       transition: 'all 0.2s ease',
                                       '&:hover': {
-                                        backgroundColor: 'rgba(139, 35, 152, 0.2)',
+                                        backgroundColor: 'rgba(25, 131, 255, 0.2)',
                                         transform: 'scale(1.05)'
                                       }
                                     }}
                                   >
-                                    <FaExternalLinkAlt size={10} color="#8B2398" />
-                                    <Typography variant="caption" sx={{ color: '#8B2398', fontSize: '0.7rem', fontWeight: 'bold' }}>
-                                      Somnia
+                                    <FaExternalLinkAlt size={10} color="#1983FF" />
+                                    <Typography variant="caption" sx={{ color: '#1983FF', fontSize: '0.7rem', fontWeight: 'bold' }}>
+                                      QIE
                                     </Typography>
                                   </Box>
                                 )}
-                                {bet.entropyProof?.arbiscanUrl && (
+                                {bet.nftTokenId && (
                                   <Box
-                                    onClick={() => window.open(bet.entropyProof.arbiscanUrl, '_blank')}
+                                    onClick={() => openQIENFTExplorer(bet.nftTokenId)}
                                     sx={{
                                       display: 'flex',
                                       alignItems: 'center',
@@ -561,24 +570,24 @@ const RouletteHistory = ({ bettingHistory = [] }) => {
                                       cursor: 'pointer',
                                       padding: '2px 6px',
                                       borderRadius: '4px',
-                                      backgroundColor: 'rgba(0, 150, 255, 0.1)',
-                                      border: '1px solid rgba(0, 150, 255, 0.3)',
+                                      backgroundColor: 'rgba(20, 216, 84, 0.1)',
+                                      border: '1px solid rgba(20, 216, 84, 0.3)',
                                       transition: 'all 0.2s ease',
                                       '&:hover': {
-                                        backgroundColor: 'rgba(0, 150, 255, 0.2)',
+                                        backgroundColor: 'rgba(20, 216, 84, 0.2)',
                                         transform: 'scale(1.05)'
                                       }
                                     }}
                                   >
-                                    <FaExternalLinkAlt size={10} color="#0096FF" />
-                                    <Typography variant="caption" sx={{ color: '#0096FF', fontSize: '0.7rem', fontWeight: 'bold' }}>
-                                      Arbiscan
+                                    <FaExternalLinkAlt size={10} color="#14D854" />
+                                    <Typography variant="caption" sx={{ color: '#14D854', fontSize: '0.7rem', fontWeight: 'bold' }}>
+                                      NFT
                                     </Typography>
                                   </Box>
                                 )}
-                                {bet.entropyProof?.explorerUrl && (
+                                {bet.entropyProof?.transactionHash && (
                                   <Box
-                                    onClick={() => window.open(bet.entropyProof.explorerUrl, '_blank')}
+                                    onClick={() => openEntropyExplorer(bet.entropyProof.transactionHash)}
                                     sx={{
                                       display: 'flex',
                                       alignItems: 'center',
@@ -729,7 +738,7 @@ const RouletteHistory = ({ bettingHistory = [] }) => {
                       </Box>
                       <Typography variant="body2" color="rgba(255,255,255,0.7)">Total Wagered</Typography>
                     </Box>
-                    <Typography variant="h4" fontWeight="bold" color="white" sx={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>{formatMONAmount(stats.totalWagered)} STT</Typography>
+                    <Typography variant="h4" fontWeight="bold" color="white" sx={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>{formatMONAmount(stats.totalWagered)} QIE</Typography>
                   </Box>
                   
                   <Box 
@@ -771,7 +780,7 @@ const RouletteHistory = ({ bettingHistory = [] }) => {
                       color={stats.netProfit >= 0 ? '#14D854' : '#d82633'}
                       sx={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
                     >
-                      {stats.netProfit >= 0 ? '+' : ''}{formatMONAmount(stats.netProfit)} STT
+                      {stats.netProfit >= 0 ? '+' : ''}{formatMONAmount(stats.netProfit)} QIE
                     </Typography>
                   </Box>
                 </Box>
@@ -891,7 +900,7 @@ const RouletteHistory = ({ bettingHistory = [] }) => {
                             zIndex: 2 
                           }}
                         >
-                          {stats.biggestWin.payout} STT
+                          {stats.biggestWin.payout} QIE
                         </Typography>
                         <Box 
                           sx={{ 
