@@ -5,6 +5,32 @@
 
 import { defineChain } from 'viem';
 
+// QIE Testnet Chain Definition
+export const qieTestnet = defineChain({
+  id: 1983,
+  name: 'QIE Testnet',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'QIE',
+    symbol: 'QIE',
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://rpc1testnet.qie.digital/'],
+    },
+    public: {
+      http: ['https://rpc1testnet.qie.digital/'],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'QIE Testnet Explorer',
+      url: 'https://testnet.qie.digital',
+    },
+  },
+  testnet: true,
+});
+
 // Somnia Testnet Chain Definition
 // Configuration based on official network.md documentation
 export const somniaTestnet = defineChain({
@@ -33,5 +59,6 @@ export const somniaTestnet = defineChain({
 });
 
 export default {
+  qieTestnet,
   somniaTestnet,
 };

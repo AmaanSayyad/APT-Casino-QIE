@@ -5,6 +5,10 @@ export const ARBITRUM_NETWORKS = {
   DEVNET: 'arbitrum-devnet'
 };
 
+export const QIE_NETWORKS = {
+  TESTNET: 'qie-testnet',
+};
+
 export const SOMNIA_NETWORKS = {
   TESTNET: 'somnia-testnet',
 };
@@ -29,9 +33,19 @@ export const ARBITRUM_EXPLORER_URLS = {
   [ARBITRUM_NETWORKS.DEVNET]: "http://localhost:8545"
 };
 
+// QIE Network URLs
+export const QIE_NETWORK_URLS = {
+  [QIE_NETWORKS.TESTNET]: "https://rpc1testnet.qie.digital/",
+};
+
 // Somnia Network URLs
 export const SOMNIA_NETWORK_URLS = {
   [SOMNIA_NETWORKS.TESTNET]: "https://dream-rpc.somnia.network",
+};
+
+// QIE Explorer URLs
+export const QIE_EXPLORER_URLS = {
+  [QIE_NETWORKS.TESTNET]: "https://testnet.qie.digital",
 };
 
 // Somnia Explorer URLs
@@ -41,6 +55,15 @@ export const SOMNIA_EXPLORER_URLS = {
 
 // Default network (can be changed via environment variable)
 export const DEFAULT_NETWORK = SOMNIA_NETWORKS.TESTNET;
+
+// QIE Contract Addresses
+export const QIE_CONTRACTS = {
+  [QIE_NETWORKS.TESTNET]: {
+    treasury: process.env.NEXT_PUBLIC_QIE_TREASURY_ADDRESS || "",
+    gameLogger: process.env.NEXT_PUBLIC_QIE_GAME_LOGGER_ADDRESS || "",
+    gameNFT: process.env.NEXT_PUBLIC_QIE_GAME_NFT_ADDRESS || ""
+  }
+};
 
 // Somnia Contract Addresses
 export const SOMNIA_CONTRACTS = {
@@ -90,6 +113,12 @@ export const TOKEN_CONFIG = {
     decimals: 18,
     type: "native"
   },
+  QIE: {
+    name: "QIE Token",
+    symbol: "QIE",
+    decimals: 18,
+    type: "native"
+  },
   STT: {
     name: "Somnia Testnet Token",
     symbol: "STT",
@@ -120,6 +149,12 @@ export const NETWORK_INFO = {
     explorer: ARBITRUM_EXPLORER_URLS[ARBITRUM_NETWORKS.DEVNET],
     faucet: ARBITRUM_FAUCET_URLS[ARBITRUM_NETWORKS.DEVNET]
   },
+  [QIE_NETWORKS.TESTNET]: {
+    name: "QIE Testnet",
+    chainId: 1983,
+    nativeCurrency: TOKEN_CONFIG.QIE,
+    explorer: QIE_EXPLORER_URLS[QIE_NETWORKS.TESTNET]
+  },
   [SOMNIA_NETWORKS.TESTNET]: {
     name: "Somnia Testnet",
     chainId: 50312,
@@ -134,6 +169,10 @@ export default {
   ARBITRUM_NETWORK_URLS,
   ARBITRUM_FAUCET_URLS,
   ARBITRUM_EXPLORER_URLS,
+  QIE_NETWORKS,
+  QIE_NETWORK_URLS,
+  QIE_EXPLORER_URLS,
+  QIE_CONTRACTS,
   SOMNIA_NETWORKS,
   SOMNIA_NETWORK_URLS,
   SOMNIA_EXPLORER_URLS,
