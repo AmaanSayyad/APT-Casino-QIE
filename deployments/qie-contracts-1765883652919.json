@@ -1,0 +1,24 @@
+{
+  "network": "QIE Testnet",
+  "chainId": 1983,
+  "deployer": "0xb424d2369F07b925D1218B08e56700AF5928287b",
+  "deployerBalance": "2.0",
+  "timestamp": "2025-12-16T11:13:49.089Z",
+  "contracts": {
+    "QIETreasury": {
+      "address": "0xacA996A4d49e7Ed42dA68a20600F249BE6d024A4",
+      "transactionHash": "0x5b07ce8988eaa5c1c581db2cd585463a627529095b87be5401b56ff0342b51b6",
+      "blockNumber": null
+    },
+    "QIEGameLogger": {
+      "address": "0x649A1a3cf745d60C98C12f3c404E09bdBb4151db",
+      "transactionHash": "0x2205655bdc0622e444b5b0e48caca40032664ab0140cf7ef6fd5036470d9a40a",
+      "blockNumber": null
+    },
+    "QIEGameNFT": {
+      "address": "0x7F0e5E8B2332F446eDa6488Cba4f4F159efE7F2E",
+      "transactionHash": "0x95a7498f272744f3e2dd16f18ef24c504584cc0769161633f9281f30d02b6a5a",
+      "blockNumber": null
+    }
+  }
+}

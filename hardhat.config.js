@@ -13,6 +13,7 @@ module.exports = {
             enabled: true,
             runs: 200,
           },
+          viaIR: true,
         },
       },
       {
@@ -22,6 +23,7 @@ module.exports = {
             enabled: true,
             runs: 200,
           },
+          viaIR: true,
         },
       }
     ]
@@ -49,6 +51,15 @@ module.exports = {
       url: process.env.NEXT_PUBLIC_SOMNIA_TESTNET_TESTNET_RPC || "https://dream-rpc.somnia.network",
       accounts: process.env.TREASURY_PRIVATE_KEY ? [process.env.TREASURY_PRIVATE_KEY] : [],
       chainId: 50312,
+      timeout: 120000,
+      httpHeaders: {
+        "User-Agent": "hardhat"
+      }
+    },
+    'qie-testnet': {
+      url: process.env.NEXT_PUBLIC_QIE_RPC_URL || "https://rpc1testnet.qie.digital/",
+      accounts: process.env.QIE_SERVER_PRIVATE_KEY ? [process.env.QIE_SERVER_PRIVATE_KEY] : [],
+      chainId: 1983,
       timeout: 120000,
       httpHeaders: {
         "User-Agent": "hardhat"

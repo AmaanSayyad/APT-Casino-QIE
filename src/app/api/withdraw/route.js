@@ -1,22 +1,22 @@
 import { NextResponse } from 'next/server';
 import { ethers } from 'ethers';
-import { somniaTestnetConfig } from '@/config/somniaTestnetConfig';
-import { SOMNIA_CONTRACTS, SOMNIA_NETWORKS } from '@/config/contracts';
+import { qieTestnetConfig } from '@/config/qieTestnetConfig';
+import { QIE_CONTRACTS, QIE_NETWORKS } from '@/config/contracts';
 
 /**
- * Withdraw API - Somnia Testnet
+ * Withdraw API - QIE Testnet
  * 
  * NETWORK ARCHITECTURE:
- * This API processes withdrawals on Somnia Testnet using STT tokens.
+ * This API processes withdrawals on QIE Testnet using QIE tokens.
  * Uses the Treasury Contract to send funds to users.
- * Validates: Requirements 2.4, 12.2
+ * Validates: Requirements 2.2, 8.1
  */
 
-// Somnia Testnet Treasury private key from environment
-const SOMNIA_TREASURY_PRIVATE_KEY = process.env.SOMNIA_TESTNET_TREASURY_PRIVATE_KEY || process.env.TREASURY_PRIVATE_KEY;
+// QIE Testnet Treasury private key from environment
+const QIE_TREASURY_PRIVATE_KEY = process.env.QIE_SERVER_PRIVATE_KEY || process.env.TREASURY_PRIVATE_KEY;
 
 // Treasury Contract Address
-const TREASURY_CONTRACT_ADDRESS = SOMNIA_CONTRACTS[SOMNIA_NETWORKS.TESTNET].treasury;
+const TREASURY_CONTRACT_ADDRESS = QIE_CONTRACTS[QIE_NETWORKS.TESTNET].treasury;
 
 // Treasury Contract ABI (only the functions we need)
 const TREASURY_ABI = [
@@ -26,12 +26,12 @@ const TREASURY_ABI = [
   "function owner() external view returns (address)"
 ];
 
-// Somnia Testnet RPC URL from config
-const SOMNIA_RPC_URL = somniaTestnetConfig.rpcUrls.default.http[0];
+// QIE Testnet RPC URL from config
+const QIE_RPC_URL = qieTestnetConfig.rpcUrls.default.http[0];
 
 // Create provider and wallet
-const provider = new ethers.JsonRpcProvider(SOMNIA_RPC_URL);
-const treasuryWallet = SOMNIA_TREASURY_PRIVATE_KEY ? new ethers.Wallet(SOMNIA_TREASURY_PRIVATE_KEY, provider) : null;
+const provider = new ethers.JsonRpcProvider(QIE_RPC_URL);
+const treasuryWallet = QIE_TREASURY_PRIVATE_KEY ? new ethers.Wallet(QIE_TREASURY_PRIVATE_KEY, provider) : null;
 
 export async function POST(request) {
   try {
@@ -51,14 +51,14 @@ export async function POST(request) {
       });
     }
 
-    if (!SOMNIA_TREASURY_PRIVATE_KEY || !treasuryWallet) {
+    if (!QIE_TREASURY_PRIVATE_KEY || !treasuryWallet) {
       return NextResponse.json(
         { error: 'Treasury not configured' },
         { status: 500 }
       );
     }
 
-    console.log(`🏦 Processing withdrawal: ${amount} STT to ${userAddress}`);
+    console.log(`🏦 Processing withdrawal: ${amount} QIE to ${userAddress}`);
     console.log(`📍 Treasury Contract: ${TREASURY_CONTRACT_ADDRESS}`);
     console.log(`📍 Treasury Wallet (Owner): ${treasuryWallet.address}`);
 
@@ -74,7 +74,7 @@ export async function POST(request) {
     try {
       // First try direct balance check (most reliable)
       treasuryBalance = await provider.getBalance(TREASURY_CONTRACT_ADDRESS);
-      console.log(`💰 Treasury Contract balance: ${ethers.formatEther(treasuryBalance)} STT`);
+      console.log(`💰 Treasury Contract balance: ${ethers.formatEther(treasuryBalance)} QIE`);
       
       // Also log stats for debugging
       try {
@@ -97,7 +97,7 @@ export async function POST(request) {
     const amountWei = ethers.parseEther(amount.toString());
     if (treasuryBalance < amountWei) {
       return NextResponse.json(
-        { error: `Insufficient treasury funds. Available: ${ethers.formatEther(treasuryBalance)} STT, Requested: ${amount} STT` },
+        { error: `Insufficient treasury funds. Available: ${ethers.formatEther(treasuryBalance)} QIE, Requested: ${amount} QIE` },
         { status: 400 }
       );
     }
@@ -131,12 +131,12 @@ export async function POST(request) {
         // If treasury wallet is not the owner, we need to check wallet balance
         // and send directly from wallet (if it has funds)
         const walletBalance = await provider.getBalance(treasuryWallet.address);
-        console.log(`💰 Treasury Wallet balance: ${ethers.formatEther(walletBalance)} STT`);
+        console.log(`💰 Treasury Wallet balance: ${ethers.formatEther(walletBalance)} QIE`);
         
         if (walletBalance < amountWei) {
           return NextResponse.json(
             { 
-              error: `Treasury wallet has insufficient funds. Wallet balance: ${ethers.formatEther(walletBalance)} STT. Contract balance: ${ethers.formatEther(treasuryBalance)} STT. Contract owner: ${contractOwner}. Please contact admin to fix ownership.`,
+              error: `Treasury wallet has insufficient funds. Wallet balance: ${ethers.formatEther(walletBalance)} QIE. Contract balance: ${ethers.formatEther(treasuryBalance)} QIE. Contract owner: ${contractOwner}. Please contact admin to fix ownership.`,
               contractOwner: contractOwner,
               treasuryWallet: treasuryWallet.address
             },
@@ -145,7 +145,7 @@ export async function POST(request) {
         }
         
         // Send directly from wallet
-        console.log('💸 Sending STT directly from Treasury wallet to user...');
+        console.log('💸 Sending QIE directly from Treasury wallet to user...');
         const tx = await treasuryWallet.sendTransaction({
           to: formattedUserAddress,
           value: amountWei,
@@ -161,7 +161,7 @@ export async function POST(request) {
           userAddress: userAddress,
           treasuryAddress: treasuryWallet.address,
           status: 'pending',
-          message: 'Transaction sent from treasury wallet. Check Somnia Explorer for confirmation.',
+          message: 'Transaction sent from treasury wallet. Check QIE Explorer for confirmation.',
           note: 'Used direct wallet transfer (contract ownership mismatch)'
         }), {
           status: 200,
@@ -176,21 +176,21 @@ export async function POST(request) {
 
     console.log('💸 Calling emergencyWithdraw on Treasury Contract...');
     
-    // Use emergencyWithdraw function to send STT from contract to user
+    // Use emergencyWithdraw function to send QIE from contract to user
     // The treasury wallet is the contract owner, so it can call this function
     const tx = await treasuryContract.emergencyWithdraw(
       formattedUserAddress,
       amountWei,
       {
-        gasLimit: 500000 // Increased gas limit for Somnia Testnet
+        gasLimit: 500000 // Increased gas limit for QIE Testnet
       }
     );
 
     console.log(`📤 Transaction sent: ${tx.hash}`);
 
     // Return transaction hash immediately without waiting for confirmation
-    // User can check transaction status on Somnia Explorer
-    console.log(`✅ Withdraw STT to ${userAddress}, TX: ${tx.hash}`);
+    // User can check transaction status on QIE Explorer
+    console.log(`✅ Withdraw QIE to ${userAddress}, TX: ${tx.hash}`);
 
     return new Response(JSON.stringify({
       success: true,
@@ -199,7 +199,7 @@ export async function POST(request) {
       userAddress: userAddress,
       treasuryAddress: treasuryWallet.address,
       status: 'pending',
-      message: 'Transaction sent successfully. Check Somnia Explorer for confirmation.'
+      message: 'Transaction sent successfully. Check QIE Explorer for confirmation.'
     }), {
       status: 200,
       headers: {
@@ -233,7 +233,7 @@ export async function POST(request) {
 // GET endpoint to check treasury balance
 export async function GET() {
   try {
-    if (!SOMNIA_TREASURY_PRIVATE_KEY || !treasuryWallet) {
+    if (!QIE_TREASURY_PRIVATE_KEY || !treasuryWallet) {
       return NextResponse.json(
         { error: 'Treasury not configured' },
         { status: 500 }
@@ -266,7 +266,7 @@ export async function GET() {
         totalWithdrawn: ethers.formatEther(stats.totalWithdrawn),
         totalUsers: stats.userCount.toString(),
         status: 'active',
-        network: 'Somnia Testnet'
+        network: 'QIE Testnet'
       });
     } catch (balanceError) {
       // Fallback to direct balance check
@@ -282,7 +282,7 @@ export async function GET() {
           walletBalance: ethers.formatEther(walletBalance),
           walletBalanceWei: walletBalance.toString(),
           status: 'partial',
-          network: 'Somnia Testnet',
+          network: 'QIE Testnet',
           note: 'Could not fetch full stats, showing balances only'
         });
       } catch (directError) {
@@ -295,7 +295,7 @@ export async function GET() {
           walletBalanceWei: '0',
           status: 'error',
           error: directError.message,
-          network: 'Somnia Testnet'
+          network: 'QIE Testnet'
         });
       }
     }

@@ -1,16 +1,16 @@
 import { NextResponse } from 'next/server';
-import { SOMNIA_CONTRACTS, SOMNIA_NETWORKS } from '@/config/contracts';
+import { QIE_CONTRACTS, QIE_NETWORKS } from '@/config/contracts';
 
 /**
- * Deposit API - Somnia Testnet
+ * Deposit API - QIE Testnet
  * 
  * NETWORK ARCHITECTURE:
- * This API processes deposits on Somnia Testnet using STT tokens.
- * Validates: Requirements 2.3, 12.1
+ * This API processes deposits on QIE Testnet using QIE tokens.
+ * Validates: Requirements 2.1, 8.1
  */
 
-// Somnia Testnet Treasury address from config
-const SOMNIA_TREASURY_ADDRESS = SOMNIA_CONTRACTS[SOMNIA_NETWORKS.TESTNET].treasury;
+// QIE Testnet Treasury address from config
+const QIE_TREASURY_ADDRESS = QIE_CONTRACTS[QIE_NETWORKS.TESTNET].treasury;
 
 export async function POST(request) {
   try {
@@ -35,20 +35,20 @@ export async function POST(request) {
     // For now, we'll simulate a successful deposit
     const mockDepositId = 'deposit_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     
-    console.log(`🏦 Processing deposit: ${amount} STT from ${userAddress}`);
-    console.log(`📍 Treasury: ${SOMNIA_TREASURY_ADDRESS}`);
+    console.log(`🏦 Processing deposit: ${amount} QIE from ${userAddress}`);
+    console.log(`📍 Treasury: ${QIE_TREASURY_ADDRESS}`);
     
     // Simulate processing delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    console.log(`✅ Deposit successful: ${amount} STT from ${userAddress}`);
+    console.log(`✅ Deposit successful: ${amount} QIE from ${userAddress}`);
     
     return NextResponse.json({
       success: true,
       depositId: mockDepositId,
       amount: amount,
       userAddress: userAddress,
-      treasuryAddress: SOMNIA_TREASURY_ADDRESS,
+      treasuryAddress: QIE_TREASURY_ADDRESS,
       status: 'confirmed',
       timestamp: new Date().toISOString()
     });
@@ -81,7 +81,7 @@ export async function GET(request) {
         id: 'deposit_1',
         amount: '0.5',
         userAddress: userAddress,
-        treasuryAddress: SOMNIA_TREASURY_ADDRESS,
+        treasuryAddress: QIE_TREASURY_ADDRESS,
         status: 'confirmed',
         timestamp: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
         transactionHash: '0x' + Math.random().toString(16).substr(2, 64)
@@ -90,7 +90,7 @@ export async function GET(request) {
         id: 'deposit_2',
         amount: '1.0',
         userAddress: userAddress,
-        treasuryAddress: SOMNIA_TREASURY_ADDRESS,
+        treasuryAddress: QIE_TREASURY_ADDRESS,
         status: 'confirmed',
         timestamp: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
         transactionHash: '0x' + Math.random().toString(16).substr(2, 64)
