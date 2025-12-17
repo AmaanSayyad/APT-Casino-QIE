@@ -1,4 +1,4 @@
-// Casino Treasury Configuration
+﻿// Casino Treasury Configuration
 // This file contains the treasury wallet address and related configuration
 
 // Treasury Contract Address (deployed on Somnia Testnet)
@@ -23,10 +23,10 @@ export const TREASURY_CONFIG = {
     WITHDRAW_LIMIT: process.env.GAS_LIMIT_WITHDRAW ? '0x' + parseInt(process.env.GAS_LIMIT_WITHDRAW).toString(16) : '0x1E8480', // 2000000 gas for contract withdraw() call
   },
   
-  // Minimum and maximum deposit amounts (in STT)
+  // Minimum and maximum deposit amounts (in QIE)
   LIMITS: {
-    MIN_DEPOSIT: parseFloat(process.env.MIN_DEPOSIT) || 0.001, // 0.001 STT minimum
-    MAX_DEPOSIT: parseFloat(process.env.MAX_DEPOSIT) || 100, // 100 STT maximum
+    MIN_DEPOSIT: parseFloat(process.env.MIN_DEPOSIT) || 0.001, // 0.001 QIE minimum
+    MAX_DEPOSIT: parseFloat(process.env.MAX_DEPOSIT) || 100, // 100 QIE maximum
   }
 };
 

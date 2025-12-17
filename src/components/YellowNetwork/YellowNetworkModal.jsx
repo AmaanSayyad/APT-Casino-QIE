@@ -1,4 +1,4 @@
-// YellowNetworkModal component
+﻿// YellowNetworkModal component
 // TODO: Implement Yellow Network modal functionality
 'use client';
 
@@ -30,7 +30,7 @@ const YellowNetworkModal = ({ isOpen, onClose, gameType = 'MINES' }) => {
       // Create game session with SDK randomness
       await createGameSession(gameType, {
         network: 'arbitrum-sepolia',
-        token: 'STT',
+        token: 'QIE',
         randomnessSource: 'sdk'
       });
       
@@ -124,7 +124,7 @@ const YellowNetworkModal = ({ isOpen, onClose, gameType = 'MINES' }) => {
               <div className="text-blue-300 font-medium text-sm mb-1">Network Details</div>
               <div className="text-white/70 text-xs space-y-1">
                 <div>🔵 QIE Blockchain Testnet</div>
-                <div>⟠ STT token</div>
+                <div>⟠ QIE token</div>
                 <div>🟡 Yellow Network State Channels</div>
               </div>
             </div>

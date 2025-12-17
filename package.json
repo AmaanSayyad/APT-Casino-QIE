@@ -42,6 +42,7 @@
     "@mui/icons-material": "^5.15.18",
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.15.18",
+    "@next/swc-wasm-nodejs": "^16.0.10",
     "@openzeppelin/contracts": "^5.4.0",
     "@pythnetwork/entropy-sdk-solidity": "^2.0.0",
     "@rainbow-me/rainbowkit": "^2.2.8",

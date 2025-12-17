@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useState, useReducer, useMemo, useEffect, useRef, useCallback } from "react";
 import { Box, Typography, IconButton, CircularProgress } from "@mui/material";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
@@ -43,7 +43,7 @@ import { useQIEGameLogger } from '@/hooks/useQIEGameLogger';
 const CASINO_MODULE_ADDRESS = process.env.NEXT_PUBLIC_CASINO_MODULE_ADDRESS || "0x0000000000000000000000000000000000000000";
 
 const parseMONAmount = (amount) => {
-  // Parse STT amount
+  // Parse QIE amount
   return parseFloat(amount);
 };
 
@@ -1105,8 +1105,8 @@ export default function GameRoulette() {
                       <FaCoins className="text-yellow-400" />
                     </div>
                     <div className="text-xs text-white/50 font-sans text-center">Volume</div>
-                    <div className="text-white font-display text-sm md:text-base truncate w-full text-center" title={`${gameStatistics.totalVolume} STT`}>
-                      {gameStatistics.totalVolume} STT
+                    <div className="text-white font-display text-sm md:text-base truncate w-full text-center" title={`${gameStatistics.totalVolume} QIE`}>
+                      {gameStatistics.totalVolume} QIE
                     </div>
                   </div>
 
@@ -1115,8 +1115,8 @@ export default function GameRoulette() {
                       <FaTrophy className="text-yellow-500" />
                     </div>
                     <div className="text-xs text-white/50 font-sans text-center">Max Win</div>
-                    <div className="text-white font-display text-sm md:text-base truncate w-full text-center" title={`${gameStatistics.maxWin} STT`}>
-                      {gameStatistics.maxWin} STT
+                    <div className="text-white font-display text-sm md:text-base truncate w-full text-center" title={`${gameStatistics.maxWin} QIE`}>
+                      {gameStatistics.maxWin} QIE
                     </div>
                   </div>
                 </motion.div>
@@ -1203,7 +1203,7 @@ export default function GameRoulette() {
   // QIE Game Logger
   const { logGame, isLogging, getExplorerUrl } = useQIEGameLogger();
 
-  // Function to fetch real STT balance will be defined after useSelector
+  // Function to fetch real QIE balance will be defined after useSelector
 
   // Sound refs
   const spinSoundRef = useRef(null);
@@ -1370,7 +1370,7 @@ export default function GameRoulette() {
   const dispatch = useDispatch();
   const { userBalance, isLoading: isLoadingBalance } = useSelector((state) => state.balance);
 
-  // Function to fetch real STT balance
+  // Function to fetch real QIE balance
   const fetchRealBalance = useCallback(async () => {
     if (!account?.address) return;
 
@@ -1611,11 +1611,11 @@ export default function GameRoulette() {
     }
 
     // Check Redux balance instead of wallet
-    const currentBalance = parseFloat(userBalance || '0'); // Balance is already in STT
+    const currentBalance = parseFloat(userBalance || '0'); // Balance is already in QIE
     const totalBetAmount = total;
 
     if (currentBalance < totalBetAmount) {
-      alert(`Insufficient balance. You have ${currentBalance.toFixed(5)} STT but need ${totalBetAmount.toFixed(5)} STT`);
+      alert(`Insufficient balance. You have ${currentBalance.toFixed(5)} QIE but need ${totalBetAmount.toFixed(5)} QIE`);
       return;
     }
 
@@ -1637,7 +1637,7 @@ export default function GameRoulette() {
       
       // Check if user has enough balance
       if (originalBalance < totalBetAmount) {
-        alert(`Insufficient balance. You have ${originalBalance.toFixed(5)} STT but need ${totalBetAmount.toFixed(5)} STT`);
+        alert(`Insufficient balance. You have ${originalBalance.toFixed(5)} QIE but need ${totalBetAmount.toFixed(5)} QIE`);
         setSubmitDisabled(false);
         setWheelSpinning(false);
         return;
@@ -2147,16 +2147,16 @@ export default function GameRoulette() {
         // Show result notification
         if (netResult > 0) {
           const winMessage = winningBets.length === 1
-                    ? `🎉 WINNER! ${winningBets[0].name} - You won ${(netResult - totalBetAmount).toFixed(5)} STT!`
-                    : `🎉 MULTIPLE WINNERS! ${winningBets.length} bets won - Total: ${(netResult - totalBetAmount).toFixed(5)} STT!`;
+                    ? `🎉 WINNER! ${winningBets[0].name} - You won ${(netResult - totalBetAmount).toFixed(5)} QIE!`
+                    : `🎉 MULTIPLE WINNERS! ${winningBets.length} bets won - Total: ${(netResult - totalBetAmount).toFixed(5)} QIE!`;
 
           setNotificationMessage(winMessage);
           setNotificationSeverity("success");
           setSnackbarMessage(winMessage);
         } else {
-          setNotificationMessage(`💸 Number ${winningNumber} - You lost ${totalBetAmount.toFixed(5)} STT!`);
+          setNotificationMessage(`💸 Number ${winningNumber} - You lost ${totalBetAmount.toFixed(5)} QIE!`);
           setNotificationSeverity("error");
-          setSnackbarMessage(`💸 Number ${winningNumber} - You lost ${totalBetAmount.toFixed(5)} STT!`);
+          setSnackbarMessage(`💸 Number ${winningNumber} - You lost ${totalBetAmount.toFixed(5)} QIE!`);
         }
         setSnackbarOpen(true);
 
@@ -2667,7 +2667,7 @@ export default function GameRoulette() {
               }}
             >
               <FaCoins className="text-yellow-400" />
-              Balance: {isConnected ? `${parseFloat(userBalance || '0').toFixed(5)} STT` : 'Connect Wallet'}
+              Balance: {isConnected ? `${parseFloat(userBalance || '0').toFixed(5)} QIE` : 'Connect Wallet'}
             </Typography>
           </Box>
 
@@ -3221,7 +3221,7 @@ export default function GameRoulette() {
               />
 
               <Typography color="white" sx={{ opacity: 0.8 }}>
-                Current Bet Total: {total.toFixed(5)} STT
+                Current Bet Total: {total.toFixed(5)} QIE
               </Typography>
 
               {/* Quick Bet Buttons */}
@@ -3306,7 +3306,7 @@ export default function GameRoulette() {
                       loading={submitDisabled}
                       onClick={lockBet}
                     >
-                      {total > 0 ? `Place Bet (${total.toFixed(5)} STT)` : 'Place Bet (STT)'}
+                      {total > 0 ? `Place Bet (${total.toFixed(5)} QIE)` : 'Place Bet (QIE)'}
                     </Button>
                     {submitDisabled && rollResult < 0 && (
                       <Typography color="white" sx={{ opacity: 0.8 }}>
@@ -3648,9 +3648,9 @@ export default function GameRoulette() {
             {notificationIndex === notificationSteps.RESULT_READY && (
               <Typography>
                 {winnings > 0
-                  ? `🎉 You won ${winnings.toFixed(4)} STT!`
+                  ? `🎉 You won ${winnings.toFixed(4)} QIE!`
                   : winnings < 0
-                  ? `💸 You lost ${Math.abs(winnings).toFixed(4)} STT!`
+                  ? `💸 You lost ${Math.abs(winnings).toFixed(4)} QIE!`
                   : "🤝 Break even!"}
               </Typography>
             )}

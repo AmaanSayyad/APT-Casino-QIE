@@ -204,11 +204,11 @@ export default function Home() {
     }
   };
 
-    // Check Redux balance (balance is already in STT)
+    // Check Redux balance (balance is already in QIE)
     const currentBalance = parseFloat(userBalance || '0');
     
     if (currentBalance < betAmount) {
-      alert(`Insufficient balance. You have ${currentBalance.toFixed(5)} STT but need ${betAmount} STT`);
+      alert(`Insufficient balance. You have ${currentBalance.toFixed(5)} QIE but need ${betAmount} QIE`);
       return;
     }
 
@@ -225,7 +225,7 @@ export default function Home() {
       const newBalance = (parseFloat(userBalance || '0') - betAmount).toString();
       dispatch(setBalance(newBalance));
       
-      console.log('balance STT');
+      console.log('balance QIE');
       
       // Set up callback to handle wheel animation completion
       window.wheelBetCallback = async (landedMultiplier) => {
@@ -291,7 +291,7 @@ export default function Home() {
           
           // Show result and update balance immediately
           if (actualMultiplier > 0) {
-            notification.success(`Congratulations! ${betAmount} STT × ${actualMultiplier.toFixed(2)} = ${winAmount.toFixed(5)} STT won!`);
+            notification.success(`Congratulations! ${betAmount} QIE × ${actualMultiplier.toFixed(2)} = ${winAmount.toFixed(5)} QIE won!`);
             
             // Update balance with winnings
             const currentBalance = parseFloat(userBalance || '0');
@@ -383,7 +383,7 @@ export default function Home() {
       });
       
       if (currentBalance < currentBet) {
-        alert(`Insufficient balance for bet ${i + 1}. Need ${currentBet.toFixed(5)} STT but have ${currentBalance.toFixed(5)} STT`);
+        alert(`Insufficient balance for bet ${i + 1}. Need ${currentBet.toFixed(5)} QIE but have ${currentBalance.toFixed(5)} QIE`);
         break;
       }
 
@@ -486,7 +486,7 @@ export default function Home() {
       
       // Show notification for win
       if (actualMultiplier > 0) {
-        notification.success(`Congratulations! ${currentBet} STT × ${actualMultiplier.toFixed(2)} = ${winAmount.toFixed(8)} STT won!`);
+        notification.success(`Congratulations! ${currentBet} QIE × ${actualMultiplier.toFixed(2)} = ${winAmount.toFixed(8)} QIE won!`);
       }
 
       // Store history entry

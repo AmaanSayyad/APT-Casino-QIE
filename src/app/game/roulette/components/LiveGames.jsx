@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Paper, Avatar, Chip, Button, LinearProgress } from '@mui/material';
 import { FaTv, FaUsers, FaCoins, FaPlay, FaVolumeUp } from 'react-icons/fa';
@@ -282,7 +282,7 @@ const LiveGames = () => {
                       </Typography>
                       <Typography variant="body2" fontWeight="medium" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                         <FaCoins size={12} color="#ffc107" />
-                        {game.minBet} STT
+                        {game.minBet} QIE
                       </Typography>
                     </Box>
                     <Box sx={{ textAlign: 'right' }}>
@@ -291,7 +291,7 @@ const LiveGames = () => {
                       </Typography>
                       <Typography variant="body2" fontWeight="medium" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, justifyContent: 'flex-end' }}>
                         <FaCoins size={12} color="#ffc107" />
-                        {game.maxBet.toLocaleString()} STT
+                        {game.maxBet.toLocaleString()} QIE
                       </Typography>
                     </Box>
                   </Box>

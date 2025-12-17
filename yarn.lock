@@ -2542,6 +2542,11 @@
   dependencies:
     glob "10.3.10"
 
+"@next/swc-wasm-nodejs@^16.0.10":
+  version "16.0.10"
+  resolved "https://registry.npmjs.org/@next/swc-wasm-nodejs/-/swc-wasm-nodejs-16.0.10.tgz"
+  integrity sha512-57z/Z1np9l+X98DENLaxtS15muzL9k13LK1ci582Hu0mgR0nzmqp5Mf9EnrGhzi1mgIjJ8iTzuao/3yDBgIttQ==
+
 "@next/swc-win32-x64-msvc@15.5.7":
   version "15.5.7"
   resolved "https://registry.npmjs.org/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-15.5.7.tgz"

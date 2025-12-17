@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useState, useEffect, useCallback } from 'react';
 import HeaderText from "@/components/HeaderText";
 import StatsOverview from "@/components/StatsOverview";
@@ -12,7 +12,7 @@ import { FaChartLine, FaHistory, FaInfoCircle, FaExchangeAlt, FaCoins, FaWallet,
 const BORROW_ASSETS = {
   ethereum_testnet: [
     {
-      symbol: "STT",
+      symbol: "QIE",
       name: "Somnia Testnet Network Coin",
       iconColor: "#F1324D",
       address: null // Native token
@@ -22,9 +22,9 @@ const BORROW_ASSETS = {
 
 // Mock transaction history
 const MOCK_TRANSACTIONS = [
-  { type: 'deposit', token: 'STT', amount: '120.5', date: new Date(Date.now() - 86400000 * 2), status: 'completed' },
+  { type: 'deposit', token: 'QIE', amount: '120.5', date: new Date(Date.now() - 86400000 * 2), status: 'completed' },
   { type: 'borrow', token: 'MNT', amount: '0.3', date: new Date(Date.now() - 86400000), status: 'completed' },
-  { type: 'swap', tokenFrom: 'MNT', tokenTo: 'STT', amountFrom: '0.2', amountTo: '98.32', date: new Date(), status: 'completed' }
+  { type: 'swap', tokenFrom: 'MNT', tokenTo: 'QIE', amountFrom: '0.2', amountTo: '98.32', date: new Date(), status: 'completed' }
 ];
 
 export default function Bank() {
@@ -66,7 +66,7 @@ export default function Bank() {
       setChainId('ethereum_testnet'); // Ethereum testnet for development
       setAssets([
         {
-          symbol: "STT",
+          symbol: "QIE",
           name: "Somnia Testnet Network Coin",
           iconColor: "#F1324D",
           address: "0x...",
@@ -84,8 +84,8 @@ export default function Bank() {
           available: "$320,000"
         },
         {
-          symbol: "STT",
-          name: 'STT',
+          symbol: "QIE",
+          name: 'QIE',
           iconColor: "#2196F3",
           address: null,
           apr: "4.8%",
@@ -110,7 +110,7 @@ export default function Bank() {
         // Set mock lending market data for Ethereum testnet
         setAssets([
           {
-            symbol: "STT",
+            symbol: "QIE",
             name: "Somnia Testnet Network Coin",
             iconColor: "#F1324D",
             address: "0x...",
@@ -264,7 +264,7 @@ export default function Bank() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="bg-[#250020] p-4 rounded-lg hover:bg-[#350030] transition-colors">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-white/70 text-sm">STT Price</span>
+                        <span className="text-white/70 text-sm">QIE Price</span>
                         <div className="flex items-center">
                           <div className="h-2 w-16 bg-[#120010] rounded-full overflow-hidden">
                             <div 
@@ -413,7 +413,7 @@ export default function Bank() {
               </p>
               <ul className="space-y-2 mb-4">
                 <li className="flex justify-between">
-                  <span className="text-white/60">STT</span>
+                  <span className="text-white/60">QIE</span>
                   <span className="text-green-500">12.5% APY</span>
                 </li>
                 <li className="flex justify-between">

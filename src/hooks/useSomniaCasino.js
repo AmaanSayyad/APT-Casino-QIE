@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useCallback } from 'react';
 import { useAccount, useBalance, usePublicClient, useWalletClient } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
@@ -11,7 +11,7 @@ const formatSTTAmount = (amount) => {
   try {
     return formatEther(BigInt(amount));
   } catch (error) {
-    console.error('Error formatting STT amount:', error);
+    console.error('Error formatting QIE amount:', error);
     return '0';
   }
 };
@@ -20,7 +20,7 @@ const parseSTTAmount = (amount) => {
   try {
     return parseEther(amount.toString()).toString();
   } catch (error) {
-    console.error('Error parsing STT amount:', error);
+    console.error('Error parsing QIE amount:', error);
     return '0';
   }
 };
@@ -62,7 +62,7 @@ export const useSomniaCasino = () => {
     }
   }, [account, publicClient]);
 
-  // Deposit function - sends STT to treasury contract
+  // Deposit function - sends QIE to treasury contract
   const deposit = useCallback(async (amount) => {
     if (!connected || !account || !walletClient) {
       throw new Error('Wallet not connected');

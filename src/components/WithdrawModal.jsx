@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes, FaWallet, FaCoins, FaArrowRight, FaCheck, FaExclamationTriangle } from 'react-icons/fa';
@@ -27,9 +27,9 @@ const WithdrawModal = ({ isOpen, onClose }) => {
   const { address: account, isConnected: connected } = useAccount();
   const dispatch = useDispatch();
   
-  // Display balance STT format
+  // Display balance QIE format
   const balanceInApt = parseFloat(userBalance || '0') / 100000000;
-  const maxWithdraw = Math.max(0, balanceInApt - 0.01); // Reserve 0.01 STT for gas fees
+  const maxWithdraw = Math.max(0, balanceInApt - 0.01); // Reserve 0.01 QIE for gas fees
   
   useEffect(() => {
     if (!isOpen) {
@@ -57,12 +57,12 @@ const WithdrawModal = ({ isOpen, onClose }) => {
     }
     
     if (amount > maxWithdraw) {
-      setError(`Insufficient balance. Max withdraw: ${maxWithdraw.toFixed(4)} STT`);
+      setError(`Insufficient balance. Max withdraw: ${maxWithdraw.toFixed(4)} QIE`);
       return false;
     }
     
     if (amount < 0.001) {
-      setError('Minimum withdraw amount is 0.001 STT');
+      setError('Minimum withdraw amount is 0.001 QIE');
       return false;
     }
     
@@ -112,7 +112,7 @@ const WithdrawModal = ({ isOpen, onClose }) => {
       dispatch(setBalance(newBalanceOctas.toString()));
       
       setStep('success');
-      toast.success(`Successfully withdrew ${amount} STT! TX: ${result.transactionHash.slice(0, 8)}...`);
+      toast.success(`Successfully withdrew ${amount} QIE! TX: ${result.transactionHash.slice(0, 8)}...`);
       
       // Close modal after 3 seconds
       setTimeout(() => {
@@ -210,7 +210,7 @@ const WithdrawModal = ({ isOpen, onClose }) => {
             <div className="bg-gray-800/50 rounded-lg p-4 space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-400">Withdraw Amount:</span>
-                <span className="text-white font-bold">{withdrawAmount} STT</span>
+                <span className="text-white font-bold">{withdrawAmount} QIE</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">To Wallet:</span>
@@ -218,12 +218,12 @@ const WithdrawModal = ({ isOpen, onClose }) => {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Network Fee:</span>
-                <span className="text-yellow-400">~0.001 STT</span>
+                <span className="text-yellow-400">~0.001 QIE</span>
               </div>
               <hr className="border-gray-600" />
               <div className="flex justify-between">
                 <span className="text-gray-400">You'll Receive:</span>
-                <span className="text-green-400 font-bold">{(parseFloat(withdrawAmount) - 0.001).toFixed(4)} STT</span>
+                <span className="text-green-400 font-bold">{(parseFloat(withdrawAmount) - 0.001).toFixed(4)} QIE</span>
               </div>
             </div>
             
@@ -256,7 +256,7 @@ const WithdrawModal = ({ isOpen, onClose }) => {
             <div className="bg-gray-800/50 rounded-lg p-4">
               <div className="flex justify-between mb-2">
                 <span className="text-gray-400">Amount:</span>
-                <span className="text-white font-bold">{withdrawAmount} STT</span>
+                <span className="text-white font-bold">{withdrawAmount} QIE</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Status:</span>
@@ -273,12 +273,12 @@ const WithdrawModal = ({ isOpen, onClose }) => {
               <FaCheck className="text-2xl text-white" />
             </div>
             <h3 className="text-2xl font-bold text-white mb-2">Withdrawal Successful!</h3>
-            <p className="text-gray-400">Your STT has been sent to your wallet</p>
+            <p className="text-gray-400">Your QIE has been sent to your wallet</p>
             
             <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
               <div className="flex justify-between mb-2">
                 <span className="text-gray-400">Amount Sent:</span>
-                <span className="text-green-400 font-bold">{withdrawAmount} STT</span>
+                <span className="text-green-400 font-bold">{withdrawAmount} QIE</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">To Wallet:</span>

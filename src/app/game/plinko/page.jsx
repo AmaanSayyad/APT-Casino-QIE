@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useRef, useEffect } from "react";
 import PlinkoGame from "./components/PlinkoGame";
 import GameHistory from "./components/GameHistory";
@@ -59,8 +59,8 @@ export default function Plinko() {
   const PlinkoHeader = () => {
     const gameStatistics = {
       totalBets: '1,234,567',
-      totalVolume: '5.2M STT',
-      maxWin: '120,000 STT'
+      totalVolume: '5.2M QIE',
+      maxWin: '120,000 QIE'
     };
     return (
       <div className="relative text-white px-4 md:px-8 lg:px-20 mb-8 pt-28 md:pt-32 lg:pt-36 mt-6">

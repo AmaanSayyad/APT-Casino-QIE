@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useState } from 'react';
 import { Box, Typography, Paper, Avatar, Chip, Tooltip, LinearProgress, IconButton, Collapse } from '@mui/material';
 import { FaTrophy, FaFire, FaMedal, FaCrown, FaChevronRight, FaChevronDown, FaChevronUp, FaGlobe, FaUserFriends, FaStar, FaCoins } from 'react-icons/fa';
@@ -362,7 +362,7 @@ const RouletteLeaderboard = () => {
                     fontSize: index === 0 ? '1.05rem' : '1rem'
                   }}
                 >
-                  {player.winnings.toLocaleString()} STT
+                  {player.winnings.toLocaleString()} QIE
                 </Typography>
               </Box>
               

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useState, useEffect } from 'react';
 import GradientBorderButton from './GradientBorderButton';
 import GradientBgButton from './GradientBgButton';
@@ -98,7 +98,7 @@ const BorrowCard = ({ asset }) => {
   
   function calculateMaxBorrowable() {
     if (isDev) {
-      return asset.symbol === 'STT' 
+      return asset.symbol === 'QIE' 
         ? 0.5123 
         : Math.random() * 2 + 0.05;
     }

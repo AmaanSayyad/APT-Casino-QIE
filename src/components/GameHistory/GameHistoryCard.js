@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useState, useEffect } from 'react';
 import {
   Card,
@@ -137,7 +137,7 @@ const GameHistoryCard = ({ game, gameType }) => {
                 Bet Amount:
               </Typography>
               <Typography variant="body1" sx={{ color: 'white', fontWeight: 'bold' }}>
-                {game.betAmount} STT
+                {game.betAmount} QIE
               </Typography>
             </Grid>
             <Grid item xs={6}>
@@ -145,7 +145,7 @@ const GameHistoryCard = ({ game, gameType }) => {
                 Payout:
               </Typography>
               <Typography variant="body1" sx={{ color: 'white', fontWeight: 'bold' }}>
-                {game.payout || '0'} STT
+                {game.payout || '0'} QIE
               </Typography>
             </Grid>
           </Grid>

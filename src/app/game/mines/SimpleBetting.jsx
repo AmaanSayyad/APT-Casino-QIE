@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'framer-motion';
 import { FaCoins, FaBomb, FaInfoCircle, FaArrowRight } from 'react-icons/fa';
 
@@ -33,7 +33,7 @@ const SimpleBetting = ({ onSubmit, initialSettings = {} }) => {
               value={betAmount}
             >
               {[10, 25, 50, 100, 250, 500, 1000].map((amount) => (
-                <option key={amount} value={amount}>{amount} STT</option>
+                <option key={amount} value={amount}>{amount} QIE</option>
               ))}
             </select>
           </div>

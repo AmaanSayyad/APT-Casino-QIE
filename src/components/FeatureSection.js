@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -17,7 +17,7 @@ export default function FeatureSection() {
     {
       id: 2,
       title: "Cross-Chain Liquidity",
-      description: "Stake tokens across multiple chains to earn STT tokens while playing your favorite games with minimal slippage.",
+      description: "Stake tokens across multiple chains to earn QIE tokens while playing your favorite games with minimal slippage.",
       icon: "⛓️"
     },
     {

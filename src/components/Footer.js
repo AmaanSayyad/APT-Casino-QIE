@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from "react";
 import Image from "next/image";
@@ -27,8 +27,8 @@ export default function Footer() {
   ];
   
   const paymentMethods = [
-    { name: "STT", icon: "/icons/eth.svg" },
-    { name: "STT", icon: "/icons/apt.svg" },
+    { name: "QIE", icon: "/icons/eth.svg" },
+    { name: "QIE", icon: "/icons/apt.svg" },
   ];
   
   const handleSubscribe = (e) => {

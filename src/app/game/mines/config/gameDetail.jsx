@@ -1,4 +1,4 @@
-export const gameData = {
+﻿export const gameData = {
   label: "Game Description",
   title: "Mines",
   image: "/images/games/mines.png",
@@ -61,17 +61,17 @@ export const bettingTableData = {
 
 export const gameStatistics = {
   totalBets: '956,421',
-      totalVolume: '4.7M STT',
-    avgBetSize: '1.85 STT',
-    maxWin: '1,217.50 STT'
+      totalVolume: '4.7M QIE',
+    avgBetSize: '1.85 QIE',
+    maxWin: '1,217.50 QIE'
 };
 
 export const recentBigWins = [
-      { player: "CryptoMiner", amount: "1,217.50 STT", time: "3m ago", config: "10 mines" },
-    { player: "DiamondHands", amount: "892.50 STT", time: "10m ago", config: "5 mines" },
-    { player: "GemHunter", amount: "653.00 STT", time: "22m ago", config: "3 mines" },
-    { player: "RiskTaker", amount: "437.00 STT", time: "45m ago", config: "3 mines" },
-    { player: "TreasureSeeker", amount: "381.50 STT", time: "1h ago", config: "1 mine" }
+      { player: "CryptoMiner", amount: "1,217.50 QIE", time: "3m ago", config: "10 mines" },
+    { player: "DiamondHands", amount: "892.50 QIE", time: "10m ago", config: "5 mines" },
+    { player: "GemHunter", amount: "653.00 QIE", time: "22m ago", config: "3 mines" },
+    { player: "RiskTaker", amount: "437.00 QIE", time: "45m ago", config: "3 mines" },
+    { player: "TreasureSeeker", amount: "381.50 QIE", time: "1h ago", config: "1 mine" }
 ];
 
 export const winProbabilities = [

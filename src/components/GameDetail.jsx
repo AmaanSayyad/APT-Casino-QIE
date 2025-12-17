@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useState, useMemo, lazy, Suspense } from 'react';
 import { Box, Typography, Container, Grid, Paper, Avatar, Tabs, Tab, Button, Tooltip, LinearProgress } from '@mui/material';
 import Image from 'next/image';
@@ -151,16 +151,16 @@ const GameDetail = ({ gameData = {}, bettingTableData = {}, showBettingTable = t
   // Memoize game statistics
   const gameStatistics = useMemo(() => ({
     totalBets: '1,234,567',
-    totalVolume: '5.6M STT',
-    avgBetSize: '245 STT',
-    maxWin: '35,000 STT'
+    totalVolume: '5.6M QIE',
+    avgBetSize: '245 QIE',
+    maxWin: '35,000 QIE'
   }), []);
 
   // Memoize recent big wins
   const recentBigWins = useMemo(() => [
-    { player: "LuckyDragon", amount: "12,500 STT", time: "2m ago", bet: "Straight Up" },
-    { player: "CryptoWhale", amount: "8,750 STT", time: "5m ago", bet: "Split" },
-    { player: "RoulettePro", amount: "6,300 STT", time: "12m ago", bet: "Corner" }
+    { player: "LuckyDragon", amount: "12,500 QIE", time: "2m ago", bet: "Straight Up" },
+    { player: "CryptoWhale", amount: "8,750 QIE", time: "5m ago", bet: "Split" },
+    { player: "RoulettePro", amount: "6,300 QIE", time: "12m ago", bet: "Corner" }
   ], []);
 
   // Add win probability data

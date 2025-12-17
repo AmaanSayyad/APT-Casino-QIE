@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Custom Chain Definitions
  * Defines custom chains not included in wagmi/chains
  */
@@ -38,8 +38,8 @@ export const somniaTestnet = defineChain({
   name: 'Somnia Testnet',
   nativeCurrency: {
     decimals: 18,
-    name: 'STT',
-    symbol: 'STT',
+    name: 'QIE',
+    symbol: 'QIE',
   },
   rpcUrls: {
     default: {

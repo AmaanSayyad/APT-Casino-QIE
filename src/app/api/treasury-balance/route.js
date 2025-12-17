@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { ethers, JsonRpcProvider, Wallet } from 'ethers';
 import { qieTestnetConfig } from '@/config/qieTestnetConfig';
 import { QIE_CONTRACTS, QIE_NETWORKS } from '@/config/contracts';
@@ -8,7 +8,7 @@ import PYTH_ENTROPY_CONFIG from '@/config/pythEntropy.js';
  * Treasury Balance API - Dual Network
  * 
  * NETWORK ARCHITECTURE:
- * - Treasury operations: Somnia Testnet (STT balance)
+ * - Treasury operations: Somnia Testnet (QIE balance)
  * - Entropy operations: Arbitrum Sepolia (ETH for entropy fees)
  * 
  * This API returns information about both networks to provide
@@ -54,7 +54,7 @@ export async function GET() {
         contractAddress: treasuryContractAddress,
         balance: balanceInSTT,
         balanceWei: balance.toString(),
-        currency: 'STT'
+        currency: 'QIE'
       },
       network: {
         name: qieTestnetConfig.name,
