@@ -14,7 +14,7 @@ import { Typography } from "@mui/material";
 import { GiRollingDices, GiCardRandom, GiPokerHand } from "react-icons/gi";
 import { FaPercentage, FaBalanceScale, FaChartLine, FaCoins, FaTrophy, FaPlay, FaExternalLinkAlt } from "react-icons/fa";
 import pythEntropyService from '../../../services/PythEntropyService';
-import { useSomniaGameLogger } from '@/hooks/useSomniaGameLogger';
+import { useQIEGameLogger } from '@/hooks/useQIEGameLogger';
 import useWalletStatus from '@/hooks/useWalletStatus';
 
 export default function Plinko() {
@@ -28,8 +28,8 @@ export default function Plinko() {
 
   const plinkoGameRef = useRef(null);
   
-  // Somnia Game Logger
-  const { logGame, isLogging, getExplorerUrl } = useSomniaGameLogger();
+  // QIE Game Logger
+  const { logGame, isLogging, getExplorerUrl } = useQIEGameLogger();
   
   // Wallet connection
   const { isConnected, address } = useWalletStatus();

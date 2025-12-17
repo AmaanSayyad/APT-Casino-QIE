@@ -20,7 +20,7 @@ import useWalletStatus from '@/hooks/useWalletStatus';
 // import VRFProofRequiredModal from '@/components/VRF/VRFProofRequiredModal';
 // import vrfLogger from '@/services/VRFLoggingService';
 import pythEntropyService from '@/services/PythEntropyService';
-import { useSomniaGameLogger } from '@/hooks/useSomniaGameLogger';
+import { useQIEGameLogger } from '@/hooks/useQIEGameLogger';
 
 // Import new components
 import WheelVideo from "./components/WheelVideo";
@@ -55,8 +55,8 @@ export default function Home() {
   const notification = useNotification();
   const { isConnected, address } = useWalletStatus();
   
-  // Somnia Game Logger
-  const { logGame, isLogging, getExplorerUrl } = useSomniaGameLogger();
+  // QIE Game Logger
+  const { logGame, isLogging, getExplorerUrl } = useQIEGameLogger();
   
   // Use ref to prevent infinite loop in useEffect
   const isInitialized = useRef(false);

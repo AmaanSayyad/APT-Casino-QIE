@@ -1,7 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Use SWC compiler instead of Babel for better performance
-  swcMinify: true,
   // Ensure SWC handles JSX properly
   experimental: {
     forceSwcTransforms: true,

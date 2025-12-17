@@ -35,7 +35,7 @@ import { useAccount } from 'wagmi';
 import { useSelector, useDispatch } from 'react-redux';
 import { setBalance, setLoading, loadBalanceFromStorage } from '@/store/balanceSlice';
 import pythEntropyService from '@/services/PythEntropyService';
-import { useSomniaGameLogger } from '@/hooks/useSomniaGameLogger';
+import { useQIEGameLogger } from '@/hooks/useQIEGameLogger';
 
 // Ethereum client functions will be added here when needed
 
@@ -1200,8 +1200,8 @@ export default function GameRoulette() {
   const { balance } = useToken(address); // Keep for compatibility
   const HOUSE_ADDR = CASINO_MODULE_ADDRESS;
   
-  // Somnia Game Logger
-  const { logGame, isLogging, getExplorerUrl } = useSomniaGameLogger();
+  // QIE Game Logger
+  const { logGame, isLogging, getExplorerUrl } = useQIEGameLogger();
 
   // Function to fetch real STT balance will be defined after useSelector
 

@@ -29,8 +29,8 @@ const HowItWorksSection = () => {
     },
     {
       id: 2,
-      title: 'Get STT tokens',
-      description: 'Power your gameplay with STT tokens of Somnia Testnet Network.',
+      title: 'Get QIE tokens',
+      description: 'Power your gameplay with QIE tokens of QIE Blockchain.',
       emoji: '💰'
     },
     {
@@ -42,7 +42,7 @@ const HowItWorksSection = () => {
     {
       id: 4,
       title: 'Earn Rewards',
-      description: 'Win STT tokens and unlock exclusive perks through our multi-tiered loyalty program. Earn cashback on losses and gain access to tournaments.',
+      description: 'Win QIE tokens and unlock exclusive perks through our multi-tiered loyalty program. Earn cashback on losses and gain access to tournaments.',
       emoji: '🏆'
     },
   ];
@@ -112,7 +112,7 @@ const HowItWorksSection = () => {
                   <EthereumConnectWalletButton />
                 ) : (
                   <GradientBorderButton className="transform hover:scale-105 transition-transform">
-                    {activeStep === 2 ? 'Get STT tokens' : 
+                    {activeStep === 2 ? 'Get QIE tokens' : 
                      activeStep === 3 ? 'Browse Games' : 'View Rewards'}
                   </GradientBorderButton>
                 )}

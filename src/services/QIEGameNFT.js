@@ -538,5 +538,4 @@ export class QIEGameNFT {
 
 // Export singleton instance (will be initialized when provider is available)
 export const qieGameNFT = new QIEGameNFT();
-export { QIEGameNFT };
 export default QIEGameNFT;

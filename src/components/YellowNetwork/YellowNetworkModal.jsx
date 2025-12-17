@@ -123,7 +123,7 @@ const YellowNetworkModal = ({ isOpen, onClose, gameType = 'MINES' }) => {
             <div className="bg-blue-900/20 border border-blue-600/30 rounded-lg p-3">
               <div className="text-blue-300 font-medium text-sm mb-1">Network Details</div>
               <div className="text-white/70 text-xs space-y-1">
-                <div>🔵 Somnia Testnet Network Testnet</div>
+                <div>🔵 QIE Blockchain Testnet</div>
                 <div>⟠ STT token</div>
                 <div>🟡 Yellow Network State Channels</div>
               </div>

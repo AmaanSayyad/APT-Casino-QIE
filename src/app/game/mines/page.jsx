@@ -25,8 +25,7 @@ import GameDetail from "@/components/GameDetail";
 import AIAutoBetting from "./components/AIAutoBetting";
 import AISettingsModal from "./components/AISettingsModal";
 import pythEntropyService from '@/services/PythEntropyService';
-import { useSomniaGameLogger } from '@/hooks/useSomniaGameLogger';
-import useWalletStatus from '@/hooks/useWalletStatus';
+import { useQIEGameLogger } from '@/hooks/useQIEGameLogger';
 
 export default function Mines() {
   // Game State
@@ -65,8 +64,8 @@ export default function Mines() {
   // Wallet connection
   const { isConnected, address } = useWalletStatus();
   
-  // Somnia Game Logger
-  const { logGame, isLogging, getExplorerUrl } = useSomniaGameLogger();
+  // QIE Game Logger
+  const { logGame, isLogging, getExplorerUrl } = useQIEGameLogger();
   
   // Theme
   const { theme } = useTheme();

@@ -55,7 +55,7 @@ const formatAddress = (address) => {
 };
 
 /**
- * Format amount in STT
+ * Format amount in QIE
  */
 const formatAmount = (amount) => {
   try {
@@ -135,13 +135,13 @@ const GameResultNotification = ({ notification, onDismiss }) => {
                 <div>
                   <span className="text-white/60">Bet:</span>
                   <span className="text-white font-semibold ml-1">
-                    {formatAmount(betAmount)} STT
+                    {formatAmount(betAmount)} QIE
                   </span>
                 </div>
                 <div>
                   <span className="text-white/60">Payout:</span>
                   <span className="text-white font-semibold ml-1">
-                    {formatAmount(payout)} STT
+                    {formatAmount(payout)} QIE
                   </span>
                 </div>
               </div>
@@ -149,7 +149,7 @@ const GameResultNotification = ({ notification, onDismiss }) => {
               {isWin && (
                 <div className="mt-1">
                   <span className="text-green-200 text-xs font-bold">
-                    +{formatAmount(profit.toString())} STT
+                    +{formatAmount(profit.toString())} QIE
                   </span>
                 </div>
               )}

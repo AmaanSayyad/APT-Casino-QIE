@@ -137,23 +137,23 @@ const WithdrawModal = ({ isOpen, onClose }) => {
               <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FaWallet className="text-2xl text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">Withdraw STT</h3>
-              <p className="text-gray-400">Transfer your winnings to your Somnia Testnet wallet</p>
+              <h3 className="text-2xl font-bold text-white mb-2">Withdraw QIE</h3>
+              <p className="text-gray-400">Transfer your winnings to your QIE wallet</p>
             </div>
             
             <div className="bg-gray-800/50 rounded-lg p-4">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-gray-400">Available Balance:</span>
-                <span className="text-white font-bold">{balanceInApt.toFixed(4)} STT</span>
+                <span className="text-white font-bold">{balanceInApt.toFixed(4)} QIE</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">Max Withdraw:</span>
-                <span className="text-green-400 font-bold">{maxWithdraw.toFixed(4)} STT</span>
+                <span className="text-green-400 font-bold">{maxWithdraw.toFixed(4)} QIE</span>
               </div>
             </div>
             
             <div>
-              <label className="block text-gray-300 mb-2">Withdraw STT</label>
+              <label className="block text-gray-300 mb-2">Withdraw QIE</label>
               <div className="relative">
                 <input
                   type="text"
