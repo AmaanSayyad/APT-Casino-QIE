@@ -151,6 +151,19 @@ export function useQIETransactionAutoPoller() {
       const intervalId = setInterval(async () => {
         try {
           const res = await fetch(`/api/log-game?id=${id}`);
+
+          // Eğer backend bu id'yi tanımıyorsa (404), bu tx'i "bozuk" sayıp
+          // hemen local tracking'den siliyoruz ki sonsuza kadar processing kalmasın.
+          if (res.status === 404) {
+            console.warn(
+              '⚠️ Transaction not found on backend, removing from local tracking:',
+              id,
+            );
+            clearInterval(intervalId);
+            removeTransaction(id);
+            return;
+          }
+
           const data = await res.json();
           if (!data.success || !data.transaction) return;
 

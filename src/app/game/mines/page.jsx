@@ -279,7 +279,7 @@ export default function Mines() {
         if (apiResult.success) {
           console.log('✅ Mines game logged to QIE Blockchain:', apiResult);
           
-          // Start tracking transaction in localStorage
+          // Start tracking transaction in localStorage (for polling + explorer links)
           startGameTransaction({
             ...apiResult,
             gameType: 'MINES',
@@ -287,6 +287,17 @@ export default function Mines() {
             betAmount: parseFloat(result.betAmount || 0),
             payout: parseFloat(result.payout || 0)
           });
+
+          // Update local game history entry with queue IDs so UI ile eşleşebilsin
+          setGameHistory(prev => prev.map(item =>
+            item.id === newHistoryItem.id
+              ? {
+                  ...item,
+                  qieLogTransactionId: apiResult.transactions?.log?.id,
+                  nftTransactionId: apiResult.transactions?.nft?.id
+                }
+              : item
+          ));
         } else {
           console.warn('⚠️ Failed to log Mines game to QIE:', apiResult.error);
         }
