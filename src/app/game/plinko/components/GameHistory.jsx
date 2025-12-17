@@ -39,50 +39,63 @@ export default function GameHistory({ history }) {
     }
   };
 
-  // Combine database history with localStorage transactions
+  // Combine DB history with localStorage transactions
   const combineHistoryWithLocalTransactions = () => {
     const combinedHistory = [...history];
-    
-    // Add completed localStorage transactions that might not be in database yet
-    localTransactions.completed.forEach(tx => {
-      const existsInDb = history.some(game => 
-        game.qieTxHash === tx.txHash || game.nftTokenId === tx.tokenId
+
+    // Map existing history rows by transaction ids
+    const byLogId = new Map();
+    const byNftId = new Map();
+    combinedHistory.forEach((game) => {
+      if (game.qieLogTransactionId) byLogId.set(game.qieLogTransactionId, game);
+      if (game.nftTransactionId) byNftId.set(game.nftTransactionId, game);
+    });
+
+    // Enrich existing rows with completed tx info (no extra rows)
+    localTransactions.completed.forEach((tx) => {
+      let matchedGame = null;
+      if (tx.logId && byLogId.has(tx.logId)) {
+        matchedGame = byLogId.get(tx.logId);
+      } else if (tx.nftId && byNftId.has(tx.nftId)) {
+        matchedGame = byNftId.get(tx.nftId);
+      }
+
+      if (matchedGame) {
+        if (tx.txHash) matchedGame.qieTxHash = tx.txHash;
+        if (tx.tokenId) matchedGame.nftTokenId = tx.tokenId;
+        if (matchedGame.isPendingTransaction) matchedGame.isPendingTransaction = false;
+      }
+    });
+
+    // Add pending tx rows only when we don't already have that id represented
+    localTransactions.pending.forEach((tx) => {
+      const existsInCombined = combinedHistory.some(
+        (game) =>
+          (game.qieLogTransactionId && game.qieLogTransactionId === tx.logId) ||
+          (game.nftTransactionId && game.nftTransactionId === tx.nftId) ||
+          game.id === `pending-${tx.logId || tx.nftId}`
       );
-      
-      if (!existsInDb) {
+
+      if (!existsInCombined) {
         combinedHistory.unshift({
-          id: `local-${tx.logId || tx.nftId}`,
+          id: `pending-${tx.logId || tx.nftId}`,
           gameType: 'PLINKO',
-          bet: tx.betAmount ? `${tx.betAmount} QIE` : 'Unknown',
-          payout: tx.payout ? `${tx.payout} QIE` : '0 QIE',
-          multiplier: tx.betAmount && tx.payout ? `${(tx.payout / tx.betAmount).toFixed(2)}x` : '0x',
-          outcome: tx.payout > tx.betAmount ? 'win' : 'loss',
-          time: new Date(tx.completedAt).toLocaleTimeString(),
-          qieTxHash: tx.txHash,
-          nftTokenId: tx.tokenId,
+          title: gameHistory?.title || '', // optional, may be empty
+          betAmount: tx.betAmount || 0,
+          multiplier: 'Pending...',
+          payout: 'Pending...',
+          outcome: 'pending',
+          time: new Date(tx.createdAt).toLocaleTimeString(),
+          qieTxHash: null,
+          nftTokenId: null,
           entropyProof: null,
-          isLocalTransaction: true
+          isPendingTransaction: true,
+          qieLogTransactionId: tx.logId,
+          nftTransactionId: tx.nftId,
         });
       }
     });
-    
-    // Add pending localStorage transactions
-    localTransactions.pending.forEach(tx => {
-      combinedHistory.unshift({
-        id: `pending-${tx.logId || tx.nftId}`,
-        gameType: 'PLINKO',
-        bet: tx.betAmount ? `${tx.betAmount} QIE` : 'Unknown',
-        payout: 'Pending...',
-        multiplier: 'Pending...',
-        outcome: 'pending',
-        time: new Date(tx.createdAt).toLocaleTimeString(),
-        qieTxHash: null,
-        nftTokenId: null,
-        entropyProof: null,
-        isPendingTransaction: true
-      });
-    });
-    
+
     return combinedHistory;
   };
 
