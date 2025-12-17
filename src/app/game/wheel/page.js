@@ -21,6 +21,7 @@ import useWalletStatus from '@/hooks/useWalletStatus';
 // import vrfLogger from '@/services/VRFLoggingService';
 import pythEntropyService from '@/services/PythEntropyService';
 import { useQIEGameLogger } from '@/hooks/useQIEGameLogger';
+import { useQIETransactionManager, useQIETransactionAutoPoller } from '@/hooks/useQIETransactionManager';
 
 // Import new components
 import WheelVideo from "./components/WheelVideo";
@@ -54,6 +55,12 @@ export default function Home() {
   const { userBalance, isLoading: isLoadingBalance } = useSelector((state) => state.balance);
   const notification = useNotification();
   const { isConnected, address } = useWalletStatus();
+  
+  // QIE Transaction Manager
+  const { startGameTransaction } = useQIETransactionManager();
+  
+  // Auto-poll pending transactions
+  const { isPolling, hasErrors, pendingCount } = useQIETransactionAutoPoller();
   
   // QIE Game Logger
   const { logGame, isLogging, getExplorerUrl } = useQIEGameLogger();
@@ -159,6 +166,23 @@ export default function Home() {
           
           if (apiResult.success) {
             console.log('✅ Wheel game logged to QIE Blockchain:', apiResult);
+            
+            // Start tracking transaction in localStorage
+            console.log('🔄 Starting localStorage transaction tracking:', {
+              gameType: 'WHEEL',
+              playerAddress: address,
+              betAmount: parseFloat(betAmount),
+              payout: parseFloat(winAmount),
+              apiResult
+            });
+            
+            startGameTransaction({
+              ...apiResult,
+              gameType: 'WHEEL',
+              playerAddress: address,
+              betAmount: parseFloat(betAmount),
+              payout: parseFloat(winAmount)
+            });
             
             // Update game history with transaction IDs for tracking
             setGameHistory(prev => prev.map(item => 

@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, TextField, InputAdornment, Select, MenuItem, FormControl, Chip, Pagination, Divider, Fade } from "@mui/material";
 import { FaHistory, FaFilter, FaDownload, FaSearch, FaTrophy, FaChartLine, FaExternalLinkAlt, FaCheck } from "react-icons/fa";
 import Image from "next/image";
+import { useQIETransactionManager } from "@/hooks/useQIETransactionManager";
+import { useAccount } from "wagmi";
 // Using Next.js public asset reference instead of import
 
 const WheelHistory = ({ gameHistory = [] }) => {
@@ -11,6 +13,13 @@ const WheelHistory = ({ gameHistory = [] }) => {
   const [entriesShown, setEntriesShown] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
+  
+  // Get user account
+  const { address } = useAccount();
+  
+  // Get localStorage transactions
+  const { getTransactionsForGame } = useQIETransactionManager();
+  const localTransactions = address ? getTransactionsForGame('WHEEL', address) : { pending: [], completed: [] };
 
    // Open QIE Testnet Explorer link for transaction hash
    const openQIETestnetExplorer = (hash) => {
@@ -24,7 +33,7 @@ const WheelHistory = ({ gameHistory = [] }) => {
   const openQIENFTExplorer = (tokenId) => {
     if (tokenId) {
       const nftContractAddress = process.env.NEXT_PUBLIC_QIE_GAME_NFT_ADDRESS;
-      const explorerUrl = `https://testnet.qie.digital/token/${nftContractAddress}/${tokenId}`;
+      const explorerUrl = `https://testnet.qie.digital/token/${nftContractAddress}/instance/${tokenId}`;
       window.open(explorerUrl, '_blank');
     }
   };
@@ -37,8 +46,66 @@ const WheelHistory = ({ gameHistory = [] }) => {
     }
   };
   
-  // Use real game history data from props instead of sample data
-  const historyData = gameHistory.length > 0 ? gameHistory : [];
+  // Combine DB history with localStorage transactions
+  const combineHistoryWithLocalTransactions = () => {
+    const combinedHistory = [...gameHistory];
+
+    // Map by transaction ids coming from /api/log-game
+    const byLogId = new Map();
+    const byNftId = new Map();
+    combinedHistory.forEach((game) => {
+      if (game.qieLogTransactionId) byLogId.set(game.qieLogTransactionId, game);
+      if (game.nftTransactionId) byNftId.set(game.nftTransactionId, game);
+    });
+
+    // Enrich existing history rows with completed tx info (no new "unknown" rows)
+    localTransactions.completed.forEach((tx) => {
+      let matchedGame = null;
+      if (tx.logId && byLogId.has(tx.logId)) {
+        matchedGame = byLogId.get(tx.logId);
+      } else if (tx.nftId && byNftId.has(tx.nftId)) {
+        matchedGame = byNftId.get(tx.nftId);
+      }
+
+      if (matchedGame) {
+        if (tx.txHash) matchedGame.qieTxHash = tx.txHash;
+        if (tx.tokenId) matchedGame.nftTokenId = tx.tokenId;
+        if (matchedGame.isPendingTransaction) matchedGame.isPendingTransaction = false;
+      }
+    });
+
+    // Add pending tx rows only if they are not already represented
+    localTransactions.pending.forEach((tx) => {
+      const existsInCombined = combinedHistory.some(
+        (game) =>
+          (game.qieLogTransactionId && game.qieLogTransactionId === tx.logId) ||
+          (game.nftTransactionId && game.nftTransactionId === tx.nftId) ||
+          game.id === `pending-${tx.logId || tx.nftId}`
+      );
+
+      if (!existsInCombined) {
+        combinedHistory.unshift({
+          id: `pending-${tx.logId || tx.nftId}`,
+          game: 'Wheel',
+          betAmount: tx.betAmount || 0,
+          payout: 0,
+          multiplier: 'Pending...',
+          outcome: 'pending',
+          time: new Date(tx.createdAt).toLocaleTimeString(),
+          qieTxHash: null,
+          nftTokenId: null,
+          entropyProof: null,
+          isPendingTransaction: true,
+          qieLogTransactionId: tx.logId,
+          nftTransactionId: tx.nftId,
+        });
+      }
+    });
+
+    return combinedHistory;
+  };
+
+  const historyData = combineHistoryWithLocalTransactions();
   
   // Filter history based on active tab and search query
   const filteredHistory = historyData.filter(item => {

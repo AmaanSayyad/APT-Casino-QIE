@@ -5,11 +5,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaHistory, FaStar, FaTrophy, FaChartBar, FaChartLine, FaBomb, FaSort, FaSortUp, FaSortDown, FaExternalLinkAlt } from "react-icons/fa";
 import { GiMining, GiDiamonds, GiTreasureMap, GiGoldBar, GiDiamondHard, GiDiamondTrophy } from "react-icons/gi";
 import { HiClock, HiOutlineLightningBolt } from "react-icons/hi";
+import { useQIETransactionManager } from "@/hooks/useQIETransactionManager";
+import { useAccount } from "wagmi";
 
 const MinesHistory = ({ gameHistory = [], userStats = {} }) => {
   // State for sorting
   const [sortField, setSortField] = useState(null);
   const [sortDirection, setSortDirection] = useState('asc');
+  
+  // Get user account
+  const { address } = useAccount();
+  
+  // Get localStorage transactions
+  const { getTransactionsForGame } = useQIETransactionManager();
+  const localTransactions = address ? getTransactionsForGame('MINES', address) : { pending: [], completed: [] };
 
   // Open QIE Testnet Explorer link for transaction hash
   const openQIETestnetExplorer = (hash) => {
@@ -23,7 +32,7 @@ const MinesHistory = ({ gameHistory = [], userStats = {} }) => {
   const openQIENFTExplorer = (tokenId) => {
     if (tokenId) {
       const nftContractAddress = process.env.NEXT_PUBLIC_QIE_GAME_NFT_ADDRESS;
-      const explorerUrl = `https://testnet.qie.digital/token/${nftContractAddress}/${tokenId}`;
+      const explorerUrl = `https://testnet.qie.digital/token/${nftContractAddress}/instance/${tokenId}`;
       window.open(explorerUrl, '_blank');
     }
   };
@@ -48,8 +57,56 @@ const MinesHistory = ({ gameHistory = [], userStats = {} }) => {
 
   const stats = { ...defaultStats, ...userStats };
 
-  // Use real game history data from props
-  const history = gameHistory.length > 0 ? gameHistory : [];
+  // Combine database history with localStorage transactions
+  const combineHistoryWithLocalTransactions = () => {
+    const combinedHistory = [...gameHistory];
+    
+    // Add completed localStorage transactions that might not be in database yet
+    localTransactions.completed.forEach(tx => {
+      const existsInDb = gameHistory.some(game => 
+        game.qieTxHash === tx.txHash || game.nftTokenId === tx.tokenId
+      );
+      
+      if (!existsInDb) {
+        combinedHistory.unshift({
+          id: `local-${tx.logId || tx.nftId}`,
+          gameType: 'MINES',
+          bet: tx.betAmount ? `${tx.betAmount} QIE` : 'Unknown',
+          payout: tx.payout ? `${tx.payout} QIE` : '0 QIE',
+          multiplier: tx.betAmount && tx.payout ? `${(tx.payout / tx.betAmount).toFixed(2)}x` : '0x',
+          outcome: tx.payout > tx.betAmount ? 'win' : 'loss',
+          mines: 'Unknown',
+          time: new Date(tx.completedAt).toLocaleTimeString(),
+          qieTxHash: tx.txHash,
+          nftTokenId: tx.tokenId,
+          entropyProof: null,
+          isLocalTransaction: true
+        });
+      }
+    });
+    
+    // Add pending localStorage transactions
+    localTransactions.pending.forEach(tx => {
+      combinedHistory.unshift({
+        id: `pending-${tx.logId || tx.nftId}`,
+        gameType: 'MINES',
+        bet: tx.betAmount ? `${tx.betAmount} QIE` : 'Unknown',
+        payout: 'Pending...',
+        multiplier: 'Pending...',
+        outcome: 'pending',
+        mines: 'Unknown',
+        time: new Date(tx.createdAt).toLocaleTimeString(),
+        qieTxHash: null,
+        nftTokenId: null,
+        entropyProof: null,
+        isPendingTransaction: true
+      });
+    });
+    
+    return combinedHistory;
+  };
+
+  const history = combineHistoryWithLocalTransactions();
   
   // Handle sorting
   const handleSort = (field) => {
@@ -271,20 +328,34 @@ const MinesHistory = ({ gameHistory = [], userStats = {} }) => {
                 y: -2
               }}
               className={`grid grid-cols-7 gap-2 p-3 text-xs rounded-lg transition-all ${
-                game.outcome === 'win' 
-                  ? 'bg-gradient-to-r from-green-900/20 to-green-800/5 border border-green-800/30' 
-                  : 'bg-gradient-to-r from-red-900/20 to-red-800/5 border border-red-800/30'
+                game.outcome === 'pending'
+                  ? 'bg-gradient-to-r from-yellow-900/20 to-yellow-800/5 border border-yellow-800/30'
+                  : game.outcome === 'win' 
+                    ? 'bg-gradient-to-r from-green-900/20 to-green-800/5 border border-green-800/30' 
+                    : 'bg-gradient-to-r from-red-900/20 to-red-800/5 border border-red-800/30'
               } shadow-sm`}
             >
               <div className="flex items-center">
                 <div className={`w-5 h-5 rounded-full mr-1.5 flex items-center justify-center ${
-                  game.outcome === 'win' 
-                    ? 'bg-green-900/40 text-green-400 border border-green-800/30' 
-                    : 'bg-red-900/40 text-red-400 border border-red-800/30'
+                  game.outcome === 'pending'
+                    ? 'bg-yellow-900/40 text-yellow-400 border border-yellow-800/30'
+                    : game.outcome === 'win' 
+                      ? 'bg-green-900/40 text-green-400 border border-green-800/30' 
+                      : 'bg-red-900/40 text-red-400 border border-red-800/30'
                 }`}>
-                  {game.outcome === 'win' ? '✓' : '✗'}
+                  {game.outcome === 'pending' ? (
+                    <div className="w-3 h-3 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+                  ) : game.outcome === 'win' ? '✓' : '✗'}
                 </div>
-                <span className="text-white/90 font-medium">#{game.id}</span>
+                <span className="text-white/90 font-medium">
+                  #{game.id}
+                  {game.isPendingTransaction && (
+                    <span className="ml-1 text-yellow-400 text-xs">(Processing...)</span>
+                  )}
+                  {game.isLocalTransaction && (
+                    <span className="ml-1 text-green-400 text-xs">(Recent)</span>
+                  )}
+                </span>
               </div>
               <div className="text-white/90 flex items-center">
                 <div className="w-4 h-4 rounded-full bg-red-900/30 border border-red-800/30 flex items-center justify-center mr-1.5">
@@ -317,10 +388,15 @@ const MinesHistory = ({ gameHistory = [], userStats = {} }) => {
                 <span>{game.time}</span>
               </div>
               <div className="text-white/70 flex items-center justify-center">
-                {game.entropyProof || game.qieTxHash || game.nftTokenId ? (
+                {game.isPendingTransaction ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-yellow-400 text-xs">Processing...</span>
+                  </div>
+                ) : game.entropyProof || game.qieTxHash || game.nftTokenId ? (
                   <div className="flex flex-col gap-1 items-center">
                     <div className="text-xs text-gray-300 font-mono text-center">
-                      <div className="text-yellow-400 font-bold">{game.entropyProof.sequenceNumber && game.entropyProof.sequenceNumber !== '0' ? String(game.entropyProof.sequenceNumber) : ''}</div>
+                      <div className="text-yellow-400 font-bold">{game.entropyProof?.sequenceNumber && game.entropyProof.sequenceNumber !== '0' ? String(game.entropyProof.sequenceNumber) : ''}</div>
                     </div>
                     <div className="flex gap-1">
                       {game.qieTxHash && (

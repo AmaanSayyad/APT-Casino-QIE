@@ -1,9 +1,18 @@
 "use client";
 import { useState } from "react";
 import { FaExternalLinkAlt } from "react-icons/fa";
+import { useQIETransactionManager } from "@/hooks/useQIETransactionManager";
+import { useAccount } from "wagmi";
 
 export default function GameHistory({ history }) {
   const [visibleCount, setVisibleCount] = useState(5);
+  
+  // Get user account
+  const { address } = useAccount();
+  
+  // Get localStorage transactions
+  const { getTransactionsForGame } = useQIETransactionManager();
+  const localTransactions = address ? getTransactionsForGame('PLINKO', address) : { pending: [], completed: [] };
   
   // Open Entropy Explorer link (Arbitrum Sepolia)
   const openEntropyExplorer = (txHash) => {
@@ -25,19 +34,68 @@ export default function GameHistory({ history }) {
   const openQIENFTExplorer = (tokenId) => {
     if (tokenId) {
       const nftContractAddress = process.env.NEXT_PUBLIC_QIE_GAME_NFT_ADDRESS;
-      const explorerUrl = `https://testnet.qie.digital/token/${nftContractAddress}/${tokenId}`;
+      const explorerUrl = `https://testnet.qie.digital/token/${nftContractAddress}/instance/${tokenId}`;
       window.open(explorerUrl, '_blank');
     }
   };
+
+  // Combine database history with localStorage transactions
+  const combineHistoryWithLocalTransactions = () => {
+    const combinedHistory = [...history];
+    
+    // Add completed localStorage transactions that might not be in database yet
+    localTransactions.completed.forEach(tx => {
+      const existsInDb = history.some(game => 
+        game.qieTxHash === tx.txHash || game.nftTokenId === tx.tokenId
+      );
+      
+      if (!existsInDb) {
+        combinedHistory.unshift({
+          id: `local-${tx.logId || tx.nftId}`,
+          gameType: 'PLINKO',
+          bet: tx.betAmount ? `${tx.betAmount} QIE` : 'Unknown',
+          payout: tx.payout ? `${tx.payout} QIE` : '0 QIE',
+          multiplier: tx.betAmount && tx.payout ? `${(tx.payout / tx.betAmount).toFixed(2)}x` : '0x',
+          outcome: tx.payout > tx.betAmount ? 'win' : 'loss',
+          time: new Date(tx.completedAt).toLocaleTimeString(),
+          qieTxHash: tx.txHash,
+          nftTokenId: tx.tokenId,
+          entropyProof: null,
+          isLocalTransaction: true
+        });
+      }
+    });
+    
+    // Add pending localStorage transactions
+    localTransactions.pending.forEach(tx => {
+      combinedHistory.unshift({
+        id: `pending-${tx.logId || tx.nftId}`,
+        gameType: 'PLINKO',
+        bet: tx.betAmount ? `${tx.betAmount} QIE` : 'Unknown',
+        payout: 'Pending...',
+        multiplier: 'Pending...',
+        outcome: 'pending',
+        time: new Date(tx.createdAt).toLocaleTimeString(),
+        qieTxHash: null,
+        nftTokenId: null,
+        entropyProof: null,
+        isPendingTransaction: true
+      });
+    });
+    
+    return combinedHistory;
+  };
+
+  const combinedHistory = combineHistoryWithLocalTransactions();
   
   return (
     <div>
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold text-white">Game History</h3>
-        {history.length > visibleCount && (
+        {combinedHistory.length > visibleCount && (
           <button
-            onClick={() => setVisibleCount((c) => Math.min(c + 5, history.length))}
+            onClick={() => setVisibleCount((c) => Math.min(c + 5, combinedHistory.length))}
             className="bg-[#2A0025] border border-[#333947] rounded-lg px-3 py-2 text-sm text-white hover:bg-[#3A0035] transition-colors"
           >
             Show more
@@ -71,14 +129,30 @@ export default function GameHistory({ history }) {
             </tr>
           </thead>
           <tbody>
-            {history.slice(0, visibleCount).map((game) => (
+            {combinedHistory.slice(0, visibleCount).map((game) => (
               <tr key={game.id} className="border-b border-[#333947]/30 hover:bg-[#2A0025]/50 transition-colors">
                 <td className="py-3 px-4">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <span className="text-xs font-bold text-white">P</span>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                      game.isPendingTransaction 
+                        ? 'bg-gradient-to-r from-yellow-500 to-orange-500' 
+                        : 'bg-gradient-to-r from-pink-500 to-purple-500'
+                    }`}>
+                      {game.isPendingTransaction ? (
+                        <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      ) : (
+                        <span className="text-xs font-bold text-white">P</span>
+                      )}
                     </div>
-                    <span className="text-white text-sm">Plinko</span>
+                    <span className="text-white text-sm">
+                      Plinko
+                      {game.isPendingTransaction && (
+                        <span className="ml-1 text-yellow-400 text-xs">(Processing...)</span>
+                      )}
+                      {game.isLocalTransaction && (
+                        <span className="ml-1 text-green-400 text-xs">(Recent)</span>
+                      )}
+                    </span>
                   </div>
                 </td>
                 <td className="py-3 px-4">
@@ -101,7 +175,12 @@ export default function GameHistory({ history }) {
                 </td>
                 <td className="py-3 px-4">
                   <div className="flex flex-col gap-1">
-                    {game.entropyProof || game.qieTxHash || game.nftTokenId ? (
+                    {game.isPendingTransaction ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+                        <span className="text-yellow-400 text-xs">Processing...</span>
+                      </div>
+                    ) : game.entropyProof || game.qieTxHash || game.nftTokenId ? (
                       <>
                         <div className="text-xs text-gray-300 font-mono">
                           <div className="text-yellow-400 font-bold">{game.entropyProof?.sequenceNumber && game.entropyProof.sequenceNumber !== '0' ? String(game.entropyProof.sequenceNumber) : ''}</div>

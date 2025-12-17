@@ -19,7 +19,7 @@ if (typeof window === 'undefined') {
 /**
  * Transaction Queue Service
  * Handles sequential processing of blockchain transactions to prevent nonce conflicts
- * Implements retry logic with exponential backoff
+ * Implements retry logic with exponential backoff and persistent storage
  */
 export class TransactionQueue {
   constructor(provider = null, signer = null) {
@@ -32,8 +32,13 @@ export class TransactionQueue {
     this.baseDelay = 1000; // 1 second base delay
     this.maxDelay = 30000; // 30 seconds max delay
     
+    // In-memory storage for completed transactions (for status checking)
+    this.completedTransactions = new Map();
+    
     console.log('🔄 TransactionQueue initialized');
   }
+
+
 
   /**
    * Set provider and signer for transaction processing
@@ -45,6 +50,8 @@ export class TransactionQueue {
     this.signer = signer;
     console.log('✅ TransactionQueue provider and signer updated');
   }
+
+
 
   /**
    * Add a transaction to the queue
@@ -70,6 +77,7 @@ export class TransactionQueue {
         result: null
       };
 
+      // Add to in-memory queue
       this.queue.push(queuedTransaction);
 
       console.log(`📥 Transaction queued: ${queuedTransaction.id} (${queuedTransaction.type})`);
@@ -100,11 +108,6 @@ export class TransactionQueue {
       return;
     }
 
-    if (this.queue.length === 0) {
-      console.log('📭 Queue is empty');
-      return;
-    }
-
     if (!this.signer) {
       console.warn('⚠️ No signer available, skipping queue processing');
       return;
@@ -114,6 +117,13 @@ export class TransactionQueue {
     console.log('🚀 Starting queue processing...');
 
     try {
+
+
+      if (this.queue.length === 0) {
+        console.log('📭 Queue is empty');
+        return;
+      }
+
       // Initialize nonce if not set
       if (this.currentNonce === null) {
         await this.initializeNonce();
@@ -193,6 +203,15 @@ export class TransactionQueue {
       transaction.result = result;
       transaction.error = null;
 
+      // Store completed transaction for status checking
+      this.completedTransactions.set(transaction.id, {
+        id: transaction.id,
+        type: transaction.type,
+        status: transaction.status,
+        result: transaction.result,
+        completedAt: new Date()
+      });
+
       console.log(`✅ Transaction completed: ${transaction.id}`);
 
     } catch (error) {
@@ -242,22 +261,28 @@ export class TransactionQueue {
    * @returns {Promise<Object|null>} Transaction status or null if not found
    */
   async getStatus(id) {
-    const transaction = this.queue.find(tx => tx.id === id);
-    
-    if (!transaction) {
-      return null;
+    // First check in-memory queue
+    const memoryTransaction = this.queue.find(tx => tx.id === id);
+    if (memoryTransaction) {
+      return {
+        id: memoryTransaction.id,
+        type: memoryTransaction.type,
+        status: memoryTransaction.status,
+        retryCount: memoryTransaction.retryCount,
+        createdAt: memoryTransaction.createdAt,
+        lastAttempt: memoryTransaction.lastAttempt,
+        error: memoryTransaction.error,
+        result: memoryTransaction.result
+      };
     }
 
-    return {
-      id: transaction.id,
-      type: transaction.type,
-      status: transaction.status,
-      retryCount: transaction.retryCount,
-      createdAt: transaction.createdAt,
-      lastAttempt: transaction.lastAttempt,
-      error: transaction.error,
-      result: transaction.result
-    };
+    // Check completed transactions storage
+    const completedTransaction = this.completedTransactions.get(id);
+    if (completedTransaction) {
+      return completedTransaction;
+    }
+
+    return null;
   }
 
   /**
@@ -436,6 +461,8 @@ export class TransactionQueue {
       }
     }
   }
+
+
 
   /**
    * Get queue statistics

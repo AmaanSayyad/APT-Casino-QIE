@@ -26,6 +26,7 @@ import AIAutoBetting from "./components/AIAutoBetting";
 import AISettingsModal from "./components/AISettingsModal";
 import pythEntropyService from '@/services/PythEntropyService';
 import { useQIEGameLogger } from '@/hooks/useQIEGameLogger';
+import { useQIETransactionManager, useQIETransactionAutoPoller } from '@/hooks/useQIETransactionManager';
 
 export default function Mines() {
   // Game State
@@ -63,6 +64,12 @@ export default function Mines() {
   
   // Wallet connection
   const { isConnected, address } = useWalletStatus();
+  
+  // QIE Transaction Manager
+  const { startGameTransaction } = useQIETransactionManager();
+  
+  // Auto-poll pending transactions
+  const { isPolling, pendingCount } = useQIETransactionAutoPoller();
   
   // QIE Game Logger
   const { logGame, isLogging, getExplorerUrl } = useQIEGameLogger();
@@ -272,17 +279,13 @@ export default function Mines() {
         if (apiResult.success) {
           console.log('✅ Mines game logged to QIE Blockchain:', apiResult);
           
-          // Update game history with transaction IDs for tracking
-          setGameHistory(prev => {
-            const updatedHistory = [...prev];
-            if (updatedHistory.length > 0 && updatedHistory[0].id === newHistoryItem.id) {
-              updatedHistory[0] = { 
-                ...updatedHistory[0], 
-                qieLogTransactionId: apiResult.transactions?.log?.id,
-                nftTransactionId: apiResult.transactions?.nft?.id
-              };
-            }
-            return updatedHistory;
+          // Start tracking transaction in localStorage
+          startGameTransaction({
+            ...apiResult,
+            gameType: 'MINES',
+            playerAddress: address,
+            betAmount: parseFloat(result.betAmount || 0),
+            payout: parseFloat(result.payout || 0)
           });
         } else {
           console.warn('⚠️ Failed to log Mines game to QIE:', apiResult.error);

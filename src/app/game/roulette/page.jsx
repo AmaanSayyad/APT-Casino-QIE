@@ -21,6 +21,8 @@ import { gameData, bettingTableData } from "./config/gameDetail";
 import { useToken } from "@/hooks/useToken";
 
 import useWalletStatus from '@/hooks/useWalletStatus';
+import { useMultipleTransactionStatus } from '@/hooks/useTransactionStatus';
+import { useQIETransactionManager, useQIETransactionAutoPoller } from '@/hooks/useQIETransactionManager';
 
 import { FaVolumeMute, FaVolumeUp, FaChartLine, FaCoins, FaTrophy, FaDice, FaBalanceScale, FaRandom, FaPercentage, FaPlayCircle } from "react-icons/fa";
 import { GiCardRandom, GiDiceTarget, GiRollingDices, GiPokerHand } from "react-icons/gi";
@@ -1189,10 +1191,17 @@ export default function GameRoulette() {
   const [isPortrait, setIsPortrait] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [bettingHistory, setBettingHistory] = useState([]);
+  const [pendingTransactions, setPendingTransactions] = useState([]);
   const [error, setError] = useState(null);
 
   // Ethereum wallet
   const { address, isConnected } = useAccount();
+  
+  // QIE Transaction Manager
+  const { startGameTransaction } = useQIETransactionManager();
+  
+  // Auto-poll pending transactions
+  const { isPolling, hasErrors, pendingCount } = useQIETransactionAutoPoller();
   const account = { address };
   const connected = isConnected;
   const isWalletReady = isConnected && address;
@@ -1326,6 +1335,8 @@ export default function GameRoulette() {
     // Remove the dev mode setting
     console.log('Environment:', process.env.NODE_ENV);
   }, []);
+
+
 
   // Check screen size and orientation for responsive layout
   useEffect(() => {
@@ -2078,6 +2089,23 @@ export default function GameRoulette() {
             .then(apiResult => {
               if (apiResult.success) {
                 console.log('✅ Roulette game logged to QIE Blockchain:', apiResult);
+                
+                // Start tracking transaction in localStorage
+                console.log('🔄 Starting localStorage transaction tracking:', {
+                  gameType: 'ROULETTE',
+                  playerAddress: address,
+                  betAmount: totalBetAmount,
+                  payout: totalPayout,
+                  apiResult
+                });
+                
+                startGameTransaction({
+                  ...apiResult,
+                  gameType: 'ROULETTE',
+                  playerAddress: address,
+                  betAmount: totalBetAmount,
+                  payout: totalPayout
+                });
                 
                 // Update betting history with transaction IDs for tracking
                 setBettingHistory(prev => {

@@ -15,7 +15,8 @@ import { GiRollingDices, GiCardRandom, GiPokerHand } from "react-icons/gi";
 import { FaPercentage, FaBalanceScale, FaChartLine, FaCoins, FaTrophy, FaPlay, FaExternalLinkAlt } from "react-icons/fa";
 import pythEntropyService from '../../../services/PythEntropyService';
 import { useQIEGameLogger } from '@/hooks/useQIEGameLogger';
-import useWalletStatus from '@/hooks/useWalletStatus';
+import { useQIETransactionManager, useQIETransactionAutoPoller } from '@/hooks/useQIETransactionManager';
+import { useAccount } from 'wagmi';
 
 export default function Plinko() {
   const userBalance = useSelector((state) => state.balance.userBalance);
@@ -25,15 +26,20 @@ export default function Plinko() {
   const [currentBetAmount, setCurrentBetAmount] = useState(0);
   const [gameHistory, setGameHistory] = useState([]);
   const [showMobileWarning, setShowMobileWarning] = useState(false);
+  // QIE Transaction Manager
+  const { startGameTransaction } = useQIETransactionManager();
+  
+  // Auto-poll pending transactions
+  const { isPolling, pendingCount } = useQIETransactionAutoPoller();
 
   const plinkoGameRef = useRef(null);
   
   // QIE Game Logger
   const { logGame, isLogging, getExplorerUrl } = useQIEGameLogger();
   
-  // Wallet connection
-  const { isConnected, address } = useWalletStatus();
-
+  // Wallet connection (wagmi, roulette ile aynı şekilde)
+  const { address, isConnected } = useAccount();
+  
   // Smooth scroll helper
   const scrollToElement = (elementId) => {
     if (typeof window === 'undefined') return;
@@ -55,6 +61,7 @@ export default function Plinko() {
     }
   }, []);
 
+  // Transaction status updates are now handled globally via useQIETransactionAutoPoller
   // Header component adapted from Roulette header
   const PlinkoHeader = () => {
     const gameStatistics = {
@@ -271,7 +278,16 @@ export default function Plinko() {
         if (apiResult.success) {
           console.log('✅ Plinko game logged to QIE Blockchain:', apiResult);
           
-          // Update game history with transaction IDs for tracking
+          // QIE transaction manager ile localStorage tracking başlat
+          startGameTransaction({
+            ...apiResult,
+            gameType: 'PLINKO',
+            playerAddress: address,
+            betAmount: parseFloat(newBetResult.betAmount || 0),
+            payout: parseFloat(newBetResult.payout || 0),
+          });
+          
+          // Update game history with transaction IDs for tracking (for UI linking)
           setGameHistory(prev => {
             const updatedHistory = [...prev];
             if (updatedHistory.length > 0 && updatedHistory[0].timestamp === enhancedBetResult.timestamp) {

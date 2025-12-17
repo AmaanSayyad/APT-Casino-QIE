@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { Box, Typography, Paper, Tabs, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, CircularProgress, Fade } from '@mui/material';
 import { FaHistory, FaChartLine, FaFire, FaExclamationCircle, FaCoins, FaInfoCircle, FaTrophy, FaDice, FaExternalLinkAlt } from 'react-icons/fa';
+import { useQIETransactionManager } from "@/hooks/useQIETransactionManager";
+import { useAccount } from "wagmi";
 
 // Utility function to format QIE amounts with proper decimal precision
 const formatMONAmount = (amount) => {
@@ -200,14 +202,94 @@ const RouletteHistory = ({ bettingHistory = [] }) => {
   const [loading, setLoading] = useState(false);
   const [bets, setBets] = useState([]);
   
-  // Update bets when bettingHistory prop changes
-  React.useEffect(() => {
-    if (bettingHistory && bettingHistory.length > 0) {
-      setBets(bettingHistory);
-    } else {
-      setBets(sampleBets);
+  // Get user account
+  const { address } = useAccount();
+  
+  // Get localStorage transactions
+  const { getTransactionsForGame } = useQIETransactionManager();
+  const localTransactions = address ? getTransactionsForGame('ROULETTE', address) : { pending: [], completed: [] };
+  
+  console.log('🎯 RouletteHistory - localStorage transactions:', {
+    address,
+    localTransactions,
+    pendingCount: localTransactions.pending.length,
+    completedCount: localTransactions.completed.length
+  });
+  
+  // Combine database history with localStorage transactions
+  const combineHistoryWithLocalTransactions = () => {
+    let combinedHistory =
+      bettingHistory && bettingHistory.length > 0 ? [...bettingHistory] : [...sampleBets];
+
+    // 1) Harici completed tx'leri, mümkünse mevcut bet satırlarıyla eşleştir
+    if (localTransactions.completed.length > 0) {
+      const byLogId = new Map();
+      const byNftId = new Map();
+
+      localTransactions.completed.forEach((tx) => {
+        if (tx.logId) byLogId.set(tx.logId, tx);
+        if (tx.nftId) byNftId.set(tx.nftId, tx);
+      });
+
+      // 1) Sadece mevcut bet kayıtlarını zenginleştir;
+      // ekstra "Unknown" satır ekleme.
+      combinedHistory = combinedHistory.map((game) => {
+        let updated = { ...game };
+
+        // Roulette page'de set edilen queue ID alanları:
+        // qieLogTransactionId, nftTransactionId
+        const logMatch =
+          game.qieLogTransactionId && byLogId.get(game.qieLogTransactionId)
+            ? byLogId.get(game.qieLogTransactionId)
+            : null;
+
+        const nftMatch =
+          game.nftTransactionId && byNftId.get(game.nftTransactionId)
+            ? byNftId.get(game.nftTransactionId)
+            : null;
+
+        if (logMatch && logMatch.txHash) {
+          updated.qieTxHash = logMatch.txHash;
+        }
+
+        if (nftMatch && nftMatch.tokenId) {
+          updated.nftTokenId = nftMatch.tokenId;
+        }
+
+        return updated;
+      });
     }
-  }, [bettingHistory]);
+
+    // 3) Pending tx'leri de (hiç bet yoksa) göster
+    localTransactions.pending.forEach((tx) => {
+      const alreadyPresent = combinedHistory.some(
+        (game) =>
+          game.id === `pending-${tx.logId || tx.nftId}` ||
+          game.qieLogTransactionId === tx.logId ||
+          game.nftTransactionId === tx.nftId,
+      );
+
+      if (!alreadyPresent) {
+        combinedHistory.unshift({
+          id: `pending-${tx.logId || tx.nftId}`,
+          time: tx.createdAt,
+          betType: 'Roulette Bet',
+          amount: tx.betAmount || 0,
+          result: 'Pending...',
+          win: false,
+          payout: 0,
+          isPendingTransaction: true,
+        });
+      }
+    });
+
+    return combinedHistory;
+  };
+
+  // Update bets when bettingHistory prop changes or localStorage transactions change
+  React.useEffect(() => {
+    setBets(combineHistoryWithLocalTransactions());
+  }, [bettingHistory, localTransactions.pending.length, localTransactions.completed.length]);
   
   const stats = calculateStats(bets);
   
@@ -262,7 +344,8 @@ const RouletteHistory = ({ bettingHistory = [] }) => {
   const openQIENFTExplorer = (tokenId) => {
     if (tokenId) {
       const nftContractAddress = process.env.NEXT_PUBLIC_QIE_GAME_NFT_ADDRESS;
-      const explorerUrl = `https://testnet.qie.digital/token/${nftContractAddress}/${tokenId}`;
+      // QIE NFT explorer URL format: /token/{contract}/instance/{tokenId}
+      const explorerUrl = `https://testnet.qie.digital/token/${nftContractAddress}/instance/${tokenId}`;
       window.open(explorerUrl, '_blank');
     }
   };

@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { store } from '@/store';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WalletStatusProvider } from '@/hooks/useWalletStatus';
+import { QIETransactionManagerProvider } from '@/hooks/useQIETransactionManager';
 import { NotificationProvider } from '@/components/NotificationSystem';
 import WalletConnectionGuard from '@/components/WalletConnectionGuard';
 import { ThemeProvider } from 'next-themes';
@@ -169,14 +170,16 @@ export default function Providers({ children }) {
           <RainbowKitProvider>
             <NotificationProvider>
               <WalletStatusProvider>
-                <WalletConnectionGuard>
-                  <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-                    <MuiThemeProvider theme={muiTheme}>
-                      <CssBaseline />
-                      {children}
-                    </MuiThemeProvider>
-                  </ThemeProvider>
-                </WalletConnectionGuard>
+                <QIETransactionManagerProvider>
+                  <WalletConnectionGuard>
+                    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+                      <MuiThemeProvider theme={muiTheme}>
+                        <CssBaseline />
+                        {children}
+                      </MuiThemeProvider>
+                    </ThemeProvider>
+                  </WalletConnectionGuard>
+                </QIETransactionManagerProvider>
               </WalletStatusProvider>
             </NotificationProvider>
           </RainbowKitProvider>

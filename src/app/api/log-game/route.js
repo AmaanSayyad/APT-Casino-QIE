@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { ethers } from 'ethers';
 import { QIEGameLogger } from '@/services/QIEGameLogger';
 import { QIEGameNFT } from '@/services/QIEGameNFT';
-import { TransactionQueue } from '@/services/TransactionQueue';
+import { transactionQueue } from '@/services/TransactionQueue';
 import { qieTestnetConfig } from '@/config/qieTestnetConfig';
 import { getQIEExplorerUrl, getQIENFTUrl } from '@/utils/explorerUrls';
 
@@ -76,8 +76,8 @@ export async function POST(request) {
     const provider = new ethers.JsonRpcProvider(rpcUrl);
     const signer = new ethers.Wallet(serverPrivateKey, provider);
 
-    // Initialize transaction queue
-    const transactionQueue = new TransactionQueue(provider, signer);
+    // Set provider and signer on singleton transaction queue
+    transactionQueue.setProviderAndSigner(provider, signer);
 
     // Prepare game log data
     const gameLogData = {
@@ -90,13 +90,49 @@ export async function POST(request) {
       nftTokenId: 0 // Will be updated after NFT minting
     };
 
-    // Prepare NFT metadata
+    // Prepare NFT metadata with both standard NFT fields and game-specific data
+    const multiplier = calculateMultiplier(betAmount, payout);
+    const outcome = payout > 0 ? 'WIN' : 'LOSS';
+    
     const nftMetadata = {
+      // Standard NFT metadata fields (required by TransactionQueue)
+      name: `${gameType.toUpperCase()} Game Result #${Date.now()}`,
+      description: `Game result NFT for ${gameType.toUpperCase()} game. Bet: ${betAmount} QIE, Payout: ${payout} QIE, Multiplier: ${multiplier}`,
+      attributes: [
+        {
+          trait_type: "Game Type",
+          value: gameType.toUpperCase()
+        },
+        {
+          trait_type: "Bet Amount",
+          value: betAmount,
+          display_type: "number"
+        },
+        {
+          trait_type: "Payout",
+          value: payout,
+          display_type: "number"
+        },
+        {
+          trait_type: "Multiplier",
+          value: multiplier
+        },
+        {
+          trait_type: "Outcome",
+          value: outcome
+        },
+        {
+          trait_type: "Timestamp",
+          value: Date.now(),
+          display_type: "date"
+        }
+      ],
+      // Game-specific fields (used by QIEGameNFT service)
       gameType: gameType.toUpperCase(),
       betAmount,
       payout,
-      multiplier: calculateMultiplier(betAmount, payout),
-      outcome: payout > 0 ? 'WIN' : 'LOSS',
+      multiplier,
+      outcome,
       entropyTxHash: entropyProof?.transactionHash || '',
       metadataURI: '' // Could be enhanced with IPFS metadata
     };
@@ -176,10 +212,7 @@ export async function GET(request) {
       );
     }
 
-    // Initialize transaction queue (read-only)
-    const transactionQueue = new TransactionQueue();
-    
-    // Get transaction status
+    // Get transaction status from singleton queue
     const status = await transactionQueue.getStatus(transactionId);
 
     if (!status) {

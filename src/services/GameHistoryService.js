@@ -30,6 +30,8 @@ export class GameHistoryService {
     }
   }
 
+
+
   /**
    * Save game result to database
    * @param {Object} gameData - Game result data
@@ -49,7 +51,10 @@ export class GameHistoryService {
         payoutAmount,
         somniaTxHash,
         somniaBlockNumber,
-        network = 'somnia-testnet'
+        qieTxHash,
+        qieBlockNumber,
+        nftTokenId,
+        network = 'qie-testnet'
       } = gameData;
 
       // Validate required fields
@@ -67,7 +72,12 @@ export class GameHistoryService {
         throw new Error('Invalid game type');
       }
 
-      // Validate Somnia transaction hash if provided
+      // Validate QIE transaction hash if provided
+      if (qieTxHash && !/^0x[a-fA-F0-9]{64}$/.test(qieTxHash)) {
+        throw new Error('Invalid QIE transaction hash format');
+      }
+
+      // Validate Somnia transaction hash if provided (for backward compatibility)
       if (somniaTxHash && !/^0x[a-fA-F0-9]{64}$/.test(somniaTxHash)) {
         throw new Error('Invalid Somnia transaction hash format');
       }
@@ -83,9 +93,12 @@ export class GameHistoryService {
           payout_amount,
           somnia_tx_hash,
           somnia_block_number,
+          qie_tx_hash,
+          qie_block_number,
+          nft_token_id,
           network,
           created_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW())
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, NOW())
         RETURNING *
       `;
 
@@ -99,6 +112,9 @@ export class GameHistoryService {
         payoutAmount ? payoutAmount.toString() : null,
         somniaTxHash || null,
         somniaBlockNumber || null,
+        qieTxHash || null,
+        qieBlockNumber || null,
+        nftTokenId || null,
         network
       ];
 
@@ -106,7 +122,8 @@ export class GameHistoryService {
       const savedGame = result.rows[0];
 
       console.log(`✅ Game result saved: ${gameType} for user ${userAddress}`, {
-        somniaTxHash: savedGame.somnia_tx_hash,
+        qieTxHash: savedGame.qie_tx_hash,
+        nftTokenId: savedGame.nft_token_id,
         network: savedGame.network
       });
 
@@ -121,6 +138,9 @@ export class GameHistoryService {
         payoutAmount: savedGame.payout_amount,
         somniaTxHash: savedGame.somnia_tx_hash,
         somniaBlockNumber: savedGame.somnia_block_number,
+        qieTxHash: savedGame.qie_tx_hash,
+        qieBlockNumber: savedGame.qie_block_number,
+        nftTokenId: savedGame.nft_token_id,
         network: savedGame.network,
         createdAt: savedGame.created_at
       };
@@ -205,7 +225,7 @@ export class GameHistoryService {
         includeVrfDetails = true
       } = options;
 
-      // Build query with Somnia transaction hash
+      // Build query with QIE and Somnia transaction hashes
       let query = `
         SELECT 
           gr.id,
@@ -218,6 +238,9 @@ export class GameHistoryService {
           gr.payout_amount,
           gr.somnia_tx_hash,
           gr.somnia_block_number,
+          gr.qie_tx_hash,
+          gr.qie_block_number,
+          gr.nft_token_id,
           gr.network,
           gr.created_at,
           ${includeVrfDetails ? `
@@ -256,6 +279,7 @@ export class GameHistoryService {
 
       // Get explorer URLs
       const somniaExplorer = process.env.NEXT_PUBLIC_SOMNIA_EXPLORER || 'https://shannon-explorer.somnia.network';
+      const qieExplorer = process.env.NEXT_PUBLIC_QIE_EXPLORER_URL || 'https://testnet.qie.digital';
       const arbitrumSepoliaExplorer = process.env.NEXT_PUBLIC_SEPOLIA_EXPLORER || 'https://sepolia.arbiscan.io';
 
       // Process results
@@ -272,10 +296,33 @@ export class GameHistoryService {
           profitLoss: row.profit_loss,
           createdAt: row.created_at,
           isWin: row.payout_amount > row.bet_amount,
-          network: row.network || 'somnia-testnet'
+          network: row.network || 'qie-testnet'
         };
 
-        // Add Somnia transaction details (game log on Somnia Testnet)
+        // Add QIE transaction details (game log on QIE Testnet)
+        if (row.qie_tx_hash) {
+          game.qieTransaction = {
+            transactionHash: row.qie_tx_hash,
+            blockNumber: row.qie_block_number,
+            explorerUrl: `${qieExplorer}/tx/${row.qie_tx_hash}`,
+            network: 'qie-testnet',
+            verificationNote: 'Game result logged on QIE Testnet - click to verify'
+          };
+        }
+
+        // Add NFT details if available
+        if (row.nft_token_id) {
+          const nftContractAddress = process.env.NEXT_PUBLIC_QIE_GAME_NFT_ADDRESS;
+          game.nftDetails = {
+            tokenId: row.nft_token_id,
+            contractAddress: nftContractAddress,
+            explorerUrl: `${qieExplorer}/token/${nftContractAddress}/${row.nft_token_id}`,
+            network: 'qie-testnet',
+            verificationNote: 'Game result NFT on QIE Testnet - click to view'
+          };
+        }
+
+        // Add Somnia transaction details (for backward compatibility)
         if (row.somnia_tx_hash) {
           game.somniaTransaction = {
             transactionHash: row.somnia_tx_hash,
