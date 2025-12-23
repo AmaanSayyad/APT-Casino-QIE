@@ -16,7 +16,15 @@ const GAME_TYPES = {
 
 // NFT Image URL - Always use production URL for consistent NFT metadata
 const NFT_IMAGE_BASE_URL = 'https://apt-casino-eta.vercel.app';
-const NFT_IMAGE_URL = `${NFT_IMAGE_BASE_URL}/images/nft/nft.png`;
+
+// Available NFT images for random selection
+const NFT_IMAGES = ['nft.png', 'nft1.png', 'nft2.png', 'nft3.png'];
+
+// Get random NFT image URL
+const getRandomNFTImage = () => {
+  const randomIndex = Math.floor(Math.random() * NFT_IMAGES.length);
+  return `${NFT_IMAGE_BASE_URL}/images/nft/${NFT_IMAGES[randomIndex]}`;
+};
 
 /**
  * POST /api/log-game
@@ -97,12 +105,13 @@ export async function POST(request) {
     // Prepare NFT metadata with both standard NFT fields and game-specific data
     const multiplier = calculateMultiplier(betAmount, payout);
     const outcome = payout > 0 ? 'WIN' : 'LOSS';
-    
+    const randomNFTImage = getRandomNFTImage(); // Select random image for this NFT
+
     const nftMetadata = {
       // Standard NFT metadata fields (required by TransactionQueue)
       name: `${gameType.toUpperCase()} Game Result #${Date.now()}`,
       description: `Game result NFT for ${gameType.toUpperCase()} game. Bet: ${betAmount} QIE, Payout: ${payout} QIE, Multiplier: ${multiplier}`,
-      image: NFT_IMAGE_URL, // NFT image URL
+      image: randomNFTImage, // Random NFT image URL
       external_url: NFT_IMAGE_BASE_URL, // Link to the casino
       attributes: [
         {
