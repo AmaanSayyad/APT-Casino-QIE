@@ -164,8 +164,39 @@ export class QIEGameNFT {
         multiplier,
         outcome,
         entropyTxHash = '',
-        metadataURI = ''
+        metadataURI: providedMetadataURI = '',
+        image = '',
+        name = '',
+        description = '',
+        external_url = ''
       } = metadata;
+
+      // Generate metadataURI with image if not provided
+      let metadataURI = providedMetadataURI;
+      if (!metadataURI && image) {
+        // Create a proper metadata JSON with image
+        const metadataJson = {
+          name: name || `${gameType} Game Result`,
+          description: description || `Game result NFT for ${gameType} game`,
+          image: image,
+          external_url: external_url || '',
+          attributes: [
+            { trait_type: "Game Type", value: gameType },
+            { trait_type: "Bet Amount", value: `${betAmount} QIE` },
+            { trait_type: "Payout", value: `${payout} QIE` },
+            { trait_type: "Multiplier", value: multiplier },
+            { trait_type: "Outcome", value: outcome },
+            { trait_type: "Entropy TX", value: entropyTxHash }
+          ]
+        };
+        
+        // Encode as base64 data URI
+        const jsonString = JSON.stringify(metadataJson);
+        const base64 = Buffer.from(jsonString).toString('base64');
+        metadataURI = `data:application/json;base64,${base64}`;
+        
+        console.log('🖼️ Generated metadataURI with image:', image);
+      }
 
       // Convert amounts to wei
       const betAmountWei = ethers.parseEther(betAmount.toString());

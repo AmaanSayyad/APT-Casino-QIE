@@ -14,6 +14,13 @@ const GAME_TYPES = {
   PLINKO: 3
 };
 
+// NFT Image URL - Vercel deployment URL or localhost for development
+const NFT_IMAGE_BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL 
+  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+  : process.env.NEXT_PUBLIC_APP_URL || 'https://apt-casino-eta.vercel.app';
+
+const NFT_IMAGE_URL = `${NFT_IMAGE_BASE_URL}/images/nft/nft.png`;
+
 /**
  * POST /api/log-game
  * Log game result to QIE Testnet and mint NFT using server wallet and transaction queue
@@ -98,6 +105,8 @@ export async function POST(request) {
       // Standard NFT metadata fields (required by TransactionQueue)
       name: `${gameType.toUpperCase()} Game Result #${Date.now()}`,
       description: `Game result NFT for ${gameType.toUpperCase()} game. Bet: ${betAmount} QIE, Payout: ${payout} QIE, Multiplier: ${multiplier}`,
+      image: NFT_IMAGE_URL, // NFT image URL
+      external_url: NFT_IMAGE_BASE_URL, // Link to the casino
       attributes: [
         {
           trait_type: "Game Type",
@@ -134,7 +143,7 @@ export async function POST(request) {
       multiplier,
       outcome,
       entropyTxHash: entropyProof?.transactionHash || '',
-      metadataURI: '' // Could be enhanced with IPFS metadata
+      metadataURI: '' // Will be generated as data URI with image
     };
 
     console.log('📝 Prepared data for blockchain operations');
