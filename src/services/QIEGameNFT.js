@@ -181,21 +181,29 @@ export class QIEGameNFT {
           image: image,
           external_url: external_url || '',
           attributes: [
-            { trait_type: "Game Type", value: gameType },
-            { trait_type: "Bet Amount", value: `${betAmount} QIE` },
-            { trait_type: "Payout", value: `${payout} QIE` },
-            { trait_type: "Multiplier", value: multiplier },
-            { trait_type: "Outcome", value: outcome },
-            { trait_type: "Entropy TX", value: entropyTxHash }
+            { trait_type: 'Game Type', value: gameType },
+            { trait_type: 'Bet Amount', value: `${betAmount} QIE` },
+            { trait_type: 'Payout', value: `${payout} QIE` },
+            { trait_type: 'Multiplier', value: multiplier },
+            { trait_type: 'Outcome', value: outcome },
+            { trait_type: 'Entropy TX', value: entropyTxHash }
           ]
         };
-        
-        // Encode as base64 data URI
+
+        // Encode as base64 data URI (use Buffer for Node.js environment)
         const jsonString = JSON.stringify(metadataJson);
-        const base64 = Buffer.from(jsonString).toString('base64');
+        let base64;
+        if (typeof Buffer !== 'undefined') {
+          base64 = Buffer.from(jsonString).toString('base64');
+        } else {
+          base64 = btoa(unescape(encodeURIComponent(jsonString)));
+        }
         metadataURI = `data:application/json;base64,${base64}`;
-        
+
         console.log('🖼️ Generated metadataURI with image:', image);
+        console.log('📋 MetadataURI length:', metadataURI.length);
+      } else {
+        console.log('⚠️ MetadataURI not generated - providedMetadataURI:', providedMetadataURI, 'image:', image);
       }
 
       // Convert amounts to wei
@@ -213,8 +221,14 @@ export class QIEGameNFT {
         multiplier,
         isWin,
         entropyTxHash,
-        metadataURI
+        metadataURILength: metadataURI?.length || 0,
+        hasMetadataURI: !!metadataURI
       });
+
+      // Log full metadataURI for debugging (truncated)
+      if (metadataURI) {
+        console.log('📋 MetadataURI preview:', metadataURI.substring(0, 100) + '...');
+      }
 
       // Call contract function
       const tx = await this.contract.mintGameNFT(

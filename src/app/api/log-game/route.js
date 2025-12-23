@@ -14,11 +14,8 @@ const GAME_TYPES = {
   PLINKO: 3
 };
 
-// NFT Image URL - Vercel deployment URL or localhost for development
-const NFT_IMAGE_BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL 
-  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-  : process.env.NEXT_PUBLIC_APP_URL || 'https://apt-casino-eta.vercel.app';
-
+// NFT Image URL - Always use production URL for consistent NFT metadata
+const NFT_IMAGE_BASE_URL = 'https://apt-casino-eta.vercel.app';
 const NFT_IMAGE_URL = `${NFT_IMAGE_BASE_URL}/images/nft/nft.png`;
 
 /**
