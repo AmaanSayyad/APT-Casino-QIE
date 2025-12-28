@@ -14,7 +14,7 @@ When I started playing, I discovered I could only bet $1 per game and couldn't i
 
 In a desperate attempt to recover my funds, I played different games all night—roulette, mines, spin wheel—and lost everything.
 
-This frustrating experience inspired APT Casino: a combination of GameFi, AI, and DeFi where users can enjoy casino games in a safe, secure, and transparent environment that doesn't scam its users.
+This frustrating experience inspired APT Casino: a combination of GameFi, AI, NFTs and DeFi where users can enjoy casino games in a safe, secure, and transparent environment that doesn't scam its users.
 
 ## 🎯 The Problem
 
@@ -109,7 +109,7 @@ Add QIE Blockchain Testnet to MetaMask:
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd apt-casino
+cd apt-casino-qie
 
 # Install dependencies
 npm install
@@ -725,85 +725,6 @@ sequenceDiagram
     Player->>Player: Share NFT Achievement
 ```
 
-### 📊 NFT Metadata Structure
-
-```mermaid
-graph LR
-    subgraph NFTMetadata["🎨 NFT Metadata (ERC-721)"]
-        A[Token ID] --> B[Player Address]
-        B --> C[Game Type]
-        C --> D[Bet Amount]
-        D --> E[Payout Amount]
-        E --> F[Multiplier]
-        F --> G[Win/Loss Status]
-        G --> H[Entropy TX Hash]
-        H --> I[Timestamp]
-        I --> J[Metadata URI]
-        J --> K[Image/Visual]
-    end
-    
-    subgraph OnChain["⛓️ On-Chain Storage"]
-        L[QIEGameNFT Contract] --> M[tokenId → Metadata Mapping]
-        M --> N[player → tokenIds[] Mapping]
-        N --> O[totalSupply Counter]
-    end
-    
-    subgraph Explorer["🔍 QIE Explorer"]
-        P[NFT View] --> Q[Metadata Display]
-        Q --> R[Transaction History]
-        R --> S[Player Collection]
-    end
-    
-    A --> L
-    J --> P
-```
-
-### 🎯 NFT Collection Management
-
-```mermaid
-flowchart TD
-    subgraph PlayerCollection["👤 Player NFT Collection"]
-        A[Player Address] --> B[Query getPlayerNFTs]
-        B --> C[Array of Token IDs]
-        C --> D[For Each Token ID]
-        D --> E[getNFTMetadata]
-        E --> F[NFT Details]
-    end
-    
-    subgraph NFTDetails["📋 NFT Details"]
-        F --> G[Game Type]
-        F --> H[Bet Amount]
-        F --> I[Payout]
-        F --> J[Multiplier]
-        F --> K[Win/Loss]
-        F --> L[Timestamp]
-        F --> M[Entropy Proof]
-        F --> N[Metadata URI]
-    end
-    
-    subgraph Display["🖼️ Display Options"]
-        G --> O[NFT Gallery View]
-        H --> O
-        I --> O
-        J --> O
-        K --> O
-        L --> O
-        M --> P[Verification Link]
-        N --> Q[Image Display]
-    end
-    
-    subgraph Actions["⚡ Player Actions"]
-        O --> R[View on Explorer]
-        O --> S[Share NFT]
-        O --> T[Filter by Game Type]
-        O --> U[Filter by Win/Loss]
-        P --> V[Verify Entropy Proof]
-    end
-    
-    style A fill:#e1f5ff
-    style F fill:#90ee90
-    style O fill:#ffd700
-```
 
 ### 🔗 NFT Contract Integration
 
