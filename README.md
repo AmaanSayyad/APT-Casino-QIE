@@ -1,10 +1,10 @@
-# APT Casino - Somnia Testnet 🎰
+# APT Casino - QIE Blockchain 🎰
 
-A production-ready decentralized casino platform built on Somnia Testnet featuring:
-- **Somnia Data Streams Integration** - Real-time game result notifications across all connected clients
+A production-ready decentralized casino platform built on QIE Blockchain Testnet featuring:
+- **QIE Blockchain Integration** - On-chain game logging and NFT minting
 - **Pyth Entropy** - Provably fair gaming with cryptographically secure randomness
 - **MetaMask Smart Accounts** - Enhanced wallet experience with batch transactions
-- **Multi-Network Architecture** - Somnia Testnet for gaming, Arbitrum Sepolia for entropy
+- **Multi-Network Architecture** - QIE Testnet for gaming, Arbitrum Sepolia for entropy
 
 ## 🎮 The Story Behind APT Casino
 
@@ -39,7 +39,7 @@ APT Casino addresses these problems by offering:
 
 - **Multiple Games**: Wheel, Roulette, Plinko, and Mines with verifiable outcomes
 - **MetaMask Smart Accounts**: Enhanced wallet experience with batch transactions
-- **STT Token**: Native currency for Somnia Testnet
+- **QIE Token**: Native currency for QIE Blockchain Testnet
 - **Flexible Withdrawal**: Unrestricted access to funds
 - **Transparent Bonuses**: Clear terms without hidden traps
 - **True Asset Ownership**: Decentralized asset management
@@ -65,7 +65,7 @@ APT Casino addresses these problems by offering:
 
 ### 3. Multi-Chain Architecture
 
-- **Gaming Network**: Somnia Testnet (Chain ID: 50312)
+- **Gaming Network**: QIE Blockchain Testnet (Chain ID: 1983)
 - **Entropy Network**: Arbitrum Sepolia (Chain ID: 421614)
 
 ### 4. Game Selection
@@ -90,19 +90,19 @@ APT Casino addresses these problems by offering:
 
 ## 🚀 Getting Started
 
-1. **Connect Wallet**: Connect your MetaMask wallet to Somnia Testnet
-2. **Get Tokens**: Get STT tokens from the Somnia Testnet faucet
-3. **Deposit**: Deposit STT to your treasury balance
+1. **Connect Wallet**: Connect your MetaMask wallet to QIE Blockchain Testnet
+2. **Get Tokens**: Get QIE tokens from the QIE Testnet faucet
+3. **Deposit**: Deposit QIE to your treasury balance
 4. **Play**: Start playing provably fair games!
 
 ### Network Configuration
 
-Add Somnia Testnet to MetaMask:
-- **Network Name**: Somnia Testnet
-- **RPC URL**: `https://dream-rpc.somnia.network`
-- **Chain ID**: `50312`
-- **Currency Symbol**: `STT`
-- **Block Explorer**: `https://shannon-explorer.somnia.network`
+Add QIE Blockchain Testnet to MetaMask:
+- **Network Name**: QIE Testnet
+- **RPC URL**: `https://rpc1testnet.qie.digital/`
+- **Chain ID**: `1983`
+- **Currency Symbol**: `QIE`
+- **Block Explorer**: `https://testnet.qie.digital`
 
 ### Quick Setup
 
@@ -190,8 +190,8 @@ graph TB
         I --> LP[Livepeer API]
     end
     
-    subgraph Gaming["Gaming Network - Somnia Testnet"]
-        MT[Somnia Testnet] --> STT[STT Token]
+    subgraph Gaming["Gaming Network - QIE Testnet"]
+        MT[QIE Testnet] --> QIE[QIE Token]
         MT --> DEP[Deposits/Withdrawals]
         MT --> SA_BATCH[Batch Transactions]
         MT --> GAS[Gasless Transactions]
@@ -254,8 +254,8 @@ flowchart TD
     I --> K
     
     K --> L{Network Check}
-    L -->|Somnia Testnet| M[Connection Success]
-    L -->|Wrong Network| N[Switch to Somnia Testnet]
+    L -->|QIE Testnet| M[Connection Success]
+    L -->|Wrong Network| N[Switch to QIE Testnet]
     
     N --> O{User Approves?}
     O -->|Yes| M
@@ -317,7 +317,7 @@ graph TB
     end
 ```
 
-## 🌐 Multi-Network Architecture (Somnia Testnet + Arbitrum)
+## 🌐 Multi-Network Architecture (QIE Testnet + Arbitrum)
 
 ```mermaid
 graph TB
@@ -332,10 +332,10 @@ graph TB
         NS --> GM[Game Manager]
     end
     
-    subgraph Somnia TestnetNet["Somnia Testnet (Chain ID: 50312)"]
-        MT[Somnia Testnet] --> STT[STT Token]
-        STT --> DEP[Deposit Contract]
-        STT --> WITH[Withdraw Contract]
+    subgraph QIETestnet["QIE Testnet (Chain ID: 1983)"]
+        MT[QIE Testnet] --> QIE[QIE Token]
+        QIE --> DEP[Deposit Contract]
+        QIE --> WITH[Withdraw Contract]
         DEP --> TB[Treasury Balance]
         WITH --> TB
         
@@ -405,7 +405,7 @@ sequenceDiagram
     participant U as User
     participant SA as Smart Account
     participant UI as Game UI
-    participant MT as Somnia Testnet
+    participant QIE as QIE Testnet
     participant API as API Route
     participant SC as Smart Contract (Arbitrum)
     participant PE as Pyth Entropy
@@ -506,7 +506,7 @@ sequenceDiagram
     participant U as User
     participant UI as Casino UI
     participant SA as Smart Account
-    participant MT as Somnia Testnet
+    participant QIE as QIE Testnet
     participant AS as Arbitrum Sepolia
     participant PE as Pyth Entropy
     
@@ -515,7 +515,7 @@ sequenceDiagram
     U->>UI: Select Multiple Games
     UI->>SA: Prepare Batch Transaction
     
-    Note over SA,MT: Batch Transaction on Somnia Testnet
+    Note over SA,QIE: Batch Transaction on QIE Testnet
     SA->>MT: Batch Bet Transaction
     MT->>SA: Confirm All Bets
     
@@ -525,7 +525,7 @@ sequenceDiagram
     PE->>AS: Return Entropy Proofs
     AS->>UI: All Game Results
     
-    Note over SA,MT: Batch Payout on Somnia Testnet
+    Note over SA,QIE: Batch Payout on QIE Testnet
     UI->>SA: Process Batch Payouts
     SA->>MT: Batch Payout Transaction
     MT->>SA: Confirm All Payouts
@@ -572,19 +572,19 @@ flowchart TD
 - **Expanded Smart Account Features**: More delegation options
 - **Tournament System**: Competitive gaming with leaderboards and prizes
 
-## 📡 Somnia Data Streams Integration 
+## 📡 QIE Blockchain Integration
 
-**This project demonstrates real-time gaming using Somnia Data Streams SDK** - turning on-chain game results into live, reactive streams that update all connected clients instantly.
+**This project demonstrates on-chain gaming using QIE Blockchain** - all game results are permanently logged on-chain with automatic NFT minting for every game.
 
-### 🎯 How SDS is Used
+### 🎯 How QIE Blockchain is Used
 
-APT Casino leverages **Somnia Data Streams SDK** to create a real-time, reactive gaming experience:
+APT Casino leverages **QIE Blockchain** to create a transparent, verifiable gaming experience:
 
-- **Real-time Notifications**: Instant updates when ANY player completes a game (< 1 second latency)
-- **Global Activity Feed**: All connected browsers see live gaming activity simultaneously
-- **WebSocket Subscriptions**: Efficient event streaming with automatic reconnection
-- **Multi-Client Broadcasting**: One game completion → all clients notified instantly
-- **On-Chain Verification**: All notifications linked to verifiable blockchain transactions
+- **On-Chain Game Logging**: All game results permanently stored on QIE Blockchain
+- **Game Result NFTs**: Every game automatically minted as ERC-721 NFT
+- **Verifiable History**: Complete game history queryable from blockchain
+- **Transparent Records**: All transactions verifiable on QIE Explorer
+- **Immutable Proof**: Each game result linked to entropy proof and transaction hash
 
 ### 🏗️ Architecture
 
@@ -596,21 +596,19 @@ graph TB
         C --> D[Backend API Call]
     end
     
-    subgraph "Somnia Testnet"
+    subgraph "QIE Testnet"
         D --> E[Treasury Signs Transaction]
-        E --> F[GameLogger Contract]
+        E --> F[QIEGameLogger Contract]
         F --> G[GameResultLogged Event]
-    end
-    
-    subgraph "Somnia Data Streams"
-        G --> H[Somnia Streams Protocol]
-        H --> I[Event Schema Registry]
-        I --> J[WebSocket/HTTP Polling]
+        E --> H[QIEGameNFT Contract]
+        H --> I[NFT Minted]
     end
     
     subgraph "Client Applications"
-        J --> K[All Connected Browsers]
-        K --> L[Notification Display]
+        G --> J[Game Log Stored]
+        I --> K[NFT Available]
+        J --> L[Display Results]
+        K --> L
     end
 ```
 
@@ -623,216 +621,241 @@ sequenceDiagram
     participant API
     participant Treasury
     participant GameLogger
-    participant SDS as Somnia Data Streams
-    participant AllClients
+    participant GameNFT
+    participant QIE as QIE Blockchain
 
     Player->>Game: Complete Game
     Game->>API: POST /api/log-game
     API->>Treasury: Sign with Private Key
+    Treasury->>GameNFT: mintGameNFT()
+    GameNFT->>QIE: NFT Minted
     Treasury->>GameLogger: logGameResult()
-    GameLogger->>GameLogger: Store Game Data
-    GameLogger->>SDS: Emit GameResultLogged Event
-    SDS->>AllClients: Broadcast Event (Real-time)
-    AllClients->>AllClients: Show Notification Instantly
+    GameLogger->>QIE: Game Logged
+    QIE->>Player: Transaction Confirmed
+    Player->>Player: View NFT + Game Log
 ```
 
-### 📋 Event Schema Registration
+### 📋 QIE Contract Events
 
-**Schema ID:** `apt-casino-game-result-logged`
-
-**Schema Definition:**
-```javascript
-{
-  schemaId: 'apt-casino-game-result-logged',
-  params: [
-    { name: 'logId', type: 'bytes32', indexed: true },
-    { name: 'player', type: 'address', indexed: true },
-    { name: 'gameType', type: 'uint8', indexed: false },
-    { name: 'betAmount', type: 'uint256', indexed: false },
-    { name: 'payout', type: 'uint256', indexed: false },
-    { name: 'entropyRequestId', type: 'bytes32', indexed: false },
-    { name: 'entropyTxHash', type: 'string', indexed: false },
-    { name: 'timestamp', type: 'uint256', indexed: false }
-  ]
-}
+**QIEGameLogger Events:**
+```solidity
+event GameResultLogged(
+  bytes32 indexed logId,
+  address indexed player,
+  uint8 gameType,
+  uint256 betAmount,
+  uint256 payout,
+  bytes32 entropyRequestId,
+  string entropyTxHash,
+  uint256 nftTokenId,
+  uint256 timestamp
+);
 ```
 
-**Registration:**
-```bash
-node scripts/register-game-result-schema.js
+**QIEGameNFT Events:**
+```solidity
+event GameNFTMinted(
+  uint256 indexed tokenId,
+  address indexed player,
+  string gameType,
+  uint256 betAmount,
+  uint256 payout,
+  bool isWin,
+  uint256 timestamp
+);
 ```
 
-### 💻 SDK Implementation
+### 💻 QIE Blockchain Integration
 
 **Service Architecture:**
 ```mermaid
 graph LR
-    A[SomniaStreamsService] --> B{WebSocket Available?}
-    B -->|Yes| C[WebSocket Mode]
-    B -->|No| D[HTTP Polling Mode]
+    A[QIEGameLogger Service] --> B[QIE Testnet]
+    C[QIEGameNFT Service] --> B
+    B --> D[Game Logs Stored]
+    B --> E[NFTs Minted]
     
-    C --> E[Real-time Events < 1s]
-    D --> F[5-Second Polling]
+    D --> F[Query Game History]
+    E --> G[View NFT Collection]
     
-    E --> G[Event Callbacks]
-    F --> G
-    
-    G --> H[Global Notification System]
+    F --> H[Display Results]
+    G --> H
 ```
 
 **Key Implementation Files:**
-- `src/services/SomniaStreamsService.js` - Main SDS service implementation
-- `src/hooks/useSomniaStreams.js` - React hook wrapper
-- `src/components/GlobalNotificationSystem.jsx` - UI integration
-- `src/config/somniaStreams.js` - Configuration
-- `somnia-streams/` - Somnia Streams SDK package
+- `src/services/QIEGameLogger.js` - Game logging service
+- `src/services/QIEGameNFT.js` - NFT minting service
+- `src/hooks/useQIEGameLogger.js` - React hook for game logging
+- `src/hooks/useQIEGameNFT.js` - React hook for NFT operations
+- `src/config/qieTestnetConfig.js` - QIE network configuration
 
-### 🔌 SDK Usage Example
+### 🔌 Usage Example
 
-**1. Initialize SDK:**
+**1. Log Game Result:**
 ```javascript
-import { SDK } from '../../somnia-streams/dist/index.js';
-import { createPublicClient, webSocket } from 'viem';
+import { QIEGameLogger } from '@/services/QIEGameLogger';
 
-const publicClient = createPublicClient({
-  chain: somniaTestnetConfig,
-  transport: webSocket('wss://dream-rpc.somnia.network')
+const logger = new QIEGameLogger(provider, signer);
+
+const result = await logger.logGameResult({
+  gameType: 'ROULETTE',
+  playerAddress: userAddress,
+  betAmount: '1.0',
+  result: gameResult,
+  payout: '2.0',
+  entropyProof: entropyResult,
+  nftTokenId: nftResult.tokenId
 });
-
-const sdk = new SDK({ public: publicClient });
 ```
 
-**2. Subscribe to Events:**
+**2. Mint Game NFT:**
 ```javascript
-const subscription = await sdk.streams.subscribe({
-  somniaStreamsEventId: 'apt-casino-game-result-logged',
-  ethCalls: [],
-  context: '',
-  onlyPushChanges: false,
-  onData: (data) => {
-    // Handle real-time event data
-    const event = parseGameResultEvent(data);
-    notifyAllClients(event);
-  },
-  onError: (error) => {
-    // Handle errors with auto-reconnection
-  }
+import { QIEGameNFT } from '@/services/QIEGameNFT';
+
+const nftService = new QIEGameNFT(provider, signer);
+
+const nftResult = await nftService.mintGameNFT(playerAddress, {
+  gameType: 'ROULETTE',
+  betAmount: '1.0',
+  payout: '2.0',
+  multiplier: '2x',
+  outcome: 'WIN',
+  entropyTxHash: entropyResult.transactionHash
 });
 ```
 
 **3. React Hook Usage:**
 ```javascript
-import { useSomniaStreams } from '@/hooks/useSomniaStreams';
+import { useQIEGameLogger } from '@/hooks/useQIEGameLogger';
+import { useQIEGameNFT } from '@/hooks/useQIEGameNFT';
 
 function GameComponent() {
-  const { isConnected, error } = useSomniaStreams({
-    onGameResult: (event) => {
-      // Handle new game result in real-time
-      console.log('New game:', event);
-      showNotification(event);
-    },
-    onError: (error) => {
-      console.error('Stream error:', error);
-    },
-    autoConnect: true
-  });
+  const { logGame, getExplorerUrl } = useQIEGameLogger();
+  const { mintNFT, getPlayerNFTs } = useQIEGameNFT();
   
-  return (
-    <div>
-      {isConnected ? '✅ Connected to Data Streams' : '⏳ Connecting...'}
-    </div>
-  );
+  const handleGameComplete = async (gameResult) => {
+    // Mint NFT first
+    const nft = await mintNFT({
+      gameType: gameResult.type,
+      betAmount: gameResult.bet,
+      payout: gameResult.payout,
+      multiplier: gameResult.multiplier,
+      outcome: gameResult.outcome,
+      entropyTxHash: gameResult.entropyTxHash
+    });
+    
+    // Then log game result
+    const log = await logGame({
+      ...gameResult,
+      nftTokenId: nft.tokenId
+    });
+    
+    console.log('NFT:', nft.nftUrl);
+    console.log('Game Log:', getExplorerUrl(log.txHash));
+  };
+  
+  return <div>...</div>;
 }
 ```
 
-### ⚡ Real-Time Features
+### ⚡ QIE Blockchain Features
 
-**1. Global Notifications:**
-- All connected users see game results instantly
-- No polling required - event-driven updates
-- WebSocket-based for minimal latency (< 1 second)
+**1. On-Chain Game Logging:**
+- All game results permanently stored on QIE Blockchain
+- Immutable records with transaction hashes
+- Complete game history queryable from blockchain
+- Verifiable proof for every game outcome
 
-**2. Connection Management:**
-- Auto-reconnection with exponential backoff (5 attempts)
-- Fallback to HTTP polling if WebSocket fails
-- Connection status indicators in UI
+**2. Game Result NFTs:**
+- Automatic NFT minting for every game
+- ERC-721 standard NFTs
+- On-chain metadata with game details
+- Player NFT collections viewable on explorer
 
-**3. Event Processing:**
-- Event deduplication using unique IDs
-- Validation of event structure
-- Error handling and recovery
+**3. Transaction Management:**
+- Queue-based transaction processing
+- Automatic retry on failure
+- Transaction status tracking
+- Explorer links for all transactions
 
-**4. Notification Display:**
-- Maximum 5 concurrent notifications
-- 8-second auto-dismiss
-- Win/loss color coding
-- Game type icons
-- Profit/loss calculation
+**4. Player Experience:**
+- View complete game history
+- Browse NFT collection
+- Verify game results on-chain
+- Share NFT achievements
 
 ### 📊 Performance Characteristics
 
-**WebSocket Mode:**
-- **Latency:** < 1 second
-- **Bandwidth:** Minimal (event-driven)
-- **Reliability:** High (with auto-reconnection)
+**QIE Blockchain:**
+- **Transaction Speed:** Fast block times
+- **Gas Costs:** Low transaction fees
+- **Reliability:** High (EVM-compatible)
+- **Explorer:** Full transaction visibility
 
-**HTTP Polling Mode (Fallback):**
-- **Latency:** 0-5 seconds
-- **Bandwidth:** Regular polling requests
-- **Reliability:** High (no connection state)
+**NFT Minting:**
+- **Automatic:** Every game triggers NFT mint
+- **Metadata:** Rich on-chain game data
+- **Collection:** Players can view all NFTs
+- **Verification:** Each NFT links to game log
 
-### 🧪 Testing SDS Integration
+### 🧪 Testing QIE Integration
 
 ```bash
-# Test Data Streams service
-node scripts/test-somnia-streams.js
+# Test QIE contracts
+node scripts/test-qie-integration.js
 
-# Verify schema registration
-node scripts/verify-schema-registration.js
+# Verify game logger
+node scripts/verify-game-logger.js
 
-# Test WebSocket diagnostics
-node scripts/diagnose-websocket.js
+# Test NFT minting
+node scripts/test-nft-minting.js
+
+# Verify all games
+node scripts/test-entropy-all-games.js
 ```
 
-### 🎮 Real-Time Use Case
+### 🎮 QIE Blockchain Use Case
 
 **Problem Solved:**
-Traditional casinos have isolated gaming experiences - players don't see what others are doing. This creates a disconnected, non-social environment.
+Traditional casinos have opaque game results with no verifiable proof. Players cannot verify fairness or maintain a permanent record of their gaming history.
 
-**SDS Solution:**
-- **Live Activity Feed**: All players see game results in real-time
-- **Social Engagement**: Shared experience creates community
-- **Instant Updates**: No page refresh needed
-- **Multi-Client Sync**: All browsers stay synchronized
+**QIE Blockchain Solution:**
+- **Transparent Records**: All games logged on-chain
+- **Verifiable Proof**: Each game linked to entropy proof
+- **NFT Collection**: Permanent record of gaming achievements
+- **Complete History**: Query all games from blockchain
 
 **Example Flow:**
-1. Player A completes Roulette game
-2. Event emitted on Somnia Testnet (< 1 second)
-3. Somnia Data Streams captures event
-4. All connected clients (Player B, C, D...) receive notification instantly
-5. UI updates across all browsers simultaneously
-6. Players see live casino activity in real-time
+1. Player completes Roulette game
+2. Game result calculated with Pyth Entropy proof
+3. NFT automatically minted on QIE Blockchain
+4. Game result logged to QIEGameLogger contract
+5. Player receives NFT link and game log transaction
+6. All records permanently stored and verifiable on QIE Explorer
 
 ## 🎮 Game Logger
 
-All game results are permanently logged on Somnia Testnet blockchain:
+All game results are permanently logged on QIE Blockchain Testnet:
 
 ### Features
 - **Immutable Records**: All game outcomes stored on-chain
 - **Verifiable History**: Transaction links for every game
-- **Dual-Network Architecture**: Game logs on Somnia, entropy on Arbitrum
+- **Dual-Network Architecture**: Game logs on QIE, entropy on Arbitrum
 - **Automatic Logging**: Non-blocking, fire-and-forget logging
 
 ### Smart Contract
 
 ```solidity
-contract SomniaGameLogger {
+contract QIEGameLogger {
   function logGameResult(
-    string memory gameType,
+    address player,
+    uint8 gameType,
     uint256 betAmount,
     bytes memory resultData,
     uint256 payout,
-    bytes32 entropyRequestId
+    bytes32 entropyRequestId,
+    string memory entropyTxHash,
+    uint256 nftTokenId
   ) external returns (bytes32 logId);
 }
 ```
@@ -840,17 +863,19 @@ contract SomniaGameLogger {
 ### Integration Example
 
 ```javascript
-import { useSomniaGameLogger } from '@/hooks/useSomniaGameLogger';
+import { useQIEGameLogger } from '@/hooks/useQIEGameLogger';
 
-const { logGame, getExplorerUrl } = useSomniaGameLogger();
+const { logGame, getExplorerUrl } = useQIEGameLogger();
 
-// After game completes
+// After game completes and NFT is minted
 const txHash = await logGame({
   gameType: 'ROULETTE',
-  betAmount: '1000000000000000000',
+  playerAddress: userAddress,
+  betAmount: '1.0',
   result: gameResult,
-  payout: '2000000000000000000',
-  entropyProof: entropyResult.entropyProof
+  payout: '2.0',
+  entropyProof: entropyResult,
+  nftTokenId: nftResult.tokenId
 });
 
 console.log('View on explorer:', getExplorerUrl(txHash));
@@ -861,39 +886,96 @@ console.log('View on explorer:', getExplorerUrl(txHash));
 Create a `.env` file with the following:
 
 ```env
-# Somnia Testnet Configuration
-NEXT_PUBLIC_SOMNIA_RPC_URL=https://dream-rpc.somnia.network
-NEXT_PUBLIC_SOMNIA_CHAIN_ID=50312
-NEXT_PUBLIC_SOMNIA_EXPLORER_URL=https://shannon-explorer.somnia.network
+# ============================================
+# Supabase Configuration
+# ============================================
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
 
-# Arbitrum Sepolia (for Pyth Entropy)
-NEXT_PUBLIC_ARBITRUM_SEPOLIA_RPC_URL=https://sepolia-rollup.arbitrum.io/rpc
-NEXT_PUBLIC_ARBITRUM_SEPOLIA_CHAIN_ID=421614
+# ============================================
+# WalletConnect Configuration
+# ============================================
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=<your-walletconnect-project-id>
 
-# Contract Addresses (Somnia Testnet)
-NEXT_PUBLIC_SOMNIA_TREASURY_ADDRESS=<your-treasury-address>
-NEXT_PUBLIC_SOMNIA_GAME_LOGGER_ADDRESS=<your-game-logger-address>
+# ============================================
+# QIE Blockchain Configuration
+# ============================================
+NEXT_PUBLIC_QIE_CHAIN_ID=1983
+NEXT_PUBLIC_QIE_RPC_URL=https://rpc1testnet.qie.digital/
+NEXT_PUBLIC_QIE_EXPLORER_URL=https://testnet.qie.digital
 
-# Contract Addresses (Arbitrum Sepolia)
-NEXT_PUBLIC_PYTH_ENTROPY_ADDRESS=<pyth-entropy-address>
-NEXT_PUBLIC_CASINO_ENTROPY_CONSUMER_ADDRESS=<your-entropy-consumer-address>
+# QIE Contract Addresses
+NEXT_PUBLIC_QIE_TREASURY_ADDRESS=0xacA996A4d49e7Ed42dA68a20600F249BE6d024A4
+NEXT_PUBLIC_QIE_GAME_LOGGER_ADDRESS=0x649A1a3cf745d60C98C12f3c404E09bdBb4151db
+NEXT_PUBLIC_QIE_GAME_NFT_ADDRESS=0x7F0e5E8B2332F446eDa6488Cba4f4F159efE7F2E
 
-# Somnia Data Streams
-NEXT_PUBLIC_SOMNIA_STREAMS_PROTOCOL_ADDRESS=0x6AB397FF662e42312c003175DCD76EfF69D048Fc
-NEXT_PUBLIC_GAME_RESULT_EVENT_SCHEMA_ID=apt-casino-game-result-logged
+# QIE Server Private Key (for backend operations)
+QIE_SERVER_PRIVATE_KEY=<your-qie-server-private-key>
 
-# Private Keys (for deployment only, never commit!)
-DEPLOYER_PRIVATE_KEY=<your-private-key>
+# ============================================
+# Pyth Entropy Configuration (Arbitrum Sepolia)
+# ============================================
+NEXT_PUBLIC_ARBITRUM_SEPOLIA_RPC=https://sepolia-rollup.arbitrum.io/rpc
+NEXT_PUBLIC_ARBITRUM_SEPOLIA_EXPLORER=https://sepolia.arbiscan.io
+
+NEXT_PUBLIC_PYTH_ENTROPY_CONTRACT=0x549ebba8036ab746611b4ffa1423eb0a4df61440
+NEXT_PUBLIC_PYTH_ENTROPY_PROVIDER=0x6CC14824Ea2918f5De5C2f75A9Da968ad4BD6344
+
+# Arbitrum Sepolia Treasury (for Pyth Entropy operations)
+ARBITRUM_TREASURY_PRIVATE_KEY=<your-arbitrum-treasury-private-key>
+
+# ============================================
+# Somnia Testnet Configuration (for deposits/withdrawals - backward compatibility)
+# ============================================
+NEXT_PUBLIC_SOMNIA_TESTNET_RPC=https://dream-rpc.somnia.network
+NEXT_PUBLIC_SOMNIA_TESTNET_CHAIN_ID=50311
+NEXT_PUBLIC_SOMNIA_TESTNET_EXPLORER=https://somnia-testnet.socialscan.io
+
+SOMNIA_TESTNET_TREASURY_ADDRESS=0xacA996A4d49e7Ed42dA68a20600F249BE6d024A4
+SOMNIA_TESTNET_TREASURY_PRIVATE_KEY=<your-somnia-treasury-private-key>
+
+# ============================================
+# Treasury Configuration (backward compatibility)
+# ============================================
+TREASURY_ADDRESS=0xacA996A4d49e7Ed42dA68a20600F249BE6d024A4
+TREASURY_PRIVATE_KEY=<your-treasury-private-key>
+
+# ============================================
+# Network Configuration
+# ============================================
+NEXT_PUBLIC_NETWORK=qie-testnet
+NEXT_PUBLIC_CHAIN_ID=1983
+
+# ============================================
+# Gas & Transaction Limits
+# ============================================
+GAS_LIMIT_DEPOSIT=21000
+GAS_LIMIT_WITHDRAW=100000
+MIN_DEPOSIT=0.001
+MAX_DEPOSIT=100
+
+# ============================================
+# Casino Module Configuration
+# ============================================
+NEXT_PUBLIC_CASINO_MODULE_ADDRESS=0x0000000000000000000000000000000000000000
+
+# ============================================
+# Environment
+# ============================================
+NODE_ENV=development
+NEXT_PUBLIC_APP_ENV=development
 ```
+
+**⚠️ Security Note**: Never commit your `.env` file to version control. Private keys should be kept secure and only used in backend/server-side code.
 
 ### Smart Contract Deployment
 
 ```bash
-# Deploy contracts to Somnia Testnet
-npx hardhat run scripts/deploy-somnia-contracts.js --network somniaTestnet
+# Deploy contracts to QIE Testnet
+npx hardhat run scripts/deploy-qie-contracts.js --network qie-testnet
 
 # Verify deployment
-node scripts/test-somnia-deployment.js
+node scripts/test-qie-integration.js
 ```
 
 ### Frontend Deployment
@@ -911,14 +993,14 @@ npm run start
 
 ### Post-Deployment Steps
 
-1. **Register Data Streams Schema**
+1. **Authorize Treasury for Game Logger**
    ```bash
-   node scripts/register-game-result-schema.js
+   node scripts/authorize-treasury-logger.js
    ```
 
-2. **Verify Schema Registration**
+2. **Authorize Treasury for Game NFT**
    ```bash
-   node scripts/verify-schema-registration.js
+   node scripts/authorize-treasury-nft.js
    ```
 
 3. **Test Game Logger**
@@ -926,9 +1008,9 @@ npm run start
    node scripts/verify-game-logger.js
    ```
 
-4. **Test Data Streams**
+4. **Test NFT Minting**
    ```bash
-   node scripts/test-somnia-streams.js
+   node scripts/test-nft-minting.js
    ```
 
 5. **Test All Games**
@@ -936,41 +1018,44 @@ npm run start
    node scripts/test-entropy-all-games.js
    ```
 
-**How SDS is Used:**
-- Real-time game result notifications using SDS SDK
-- WebSocket subscriptions for instant updates
-- Global activity feed across all connected clients
-- Event-driven architecture with automatic reconnection
+**How QIE Blockchain is Used:**
+- On-chain game result logging using QIEGameLogger contract
+- Automatic NFT minting for every game using QIEGameNFT contract
+- Complete game history queryable from blockchain
+- Verifiable proof for every game outcome
 
 **Key Implementation:**
-- **Service:** `src/services/SomniaStreamsService.js`
-- **Hook:** `src/hooks/useSomniaStreams.js`
-- **Component:** `src/components/GlobalNotificationSystem.jsx`
-- **Schema ID:** `apt-casino-game-result-logged`
+- **Service:** `src/services/QIEGameLogger.js`
+- **Service:** `src/services/QIEGameNFT.js`
+- **Hook:** `src/hooks/useQIEGameLogger.js`
+- **Hook:** `src/hooks/useQIEGameNFT.js`
+- **Config:** `src/config/qieTestnetConfig.js`
 
-**Real-Time UX:**
-- < 1 second latency for notifications
-- Multi-client synchronization
-- Automatic fallback to HTTP polling
-- Connection status indicators
+**QIE Blockchain Features:**
+- Permanent on-chain game records
+- ERC-721 NFTs for every game
+- Complete transaction history
+- Verifiable on QIE Explorer
 
-**Somnia Integration:**
-- ✅ Deployed on Somnia Testnet (Chain ID: 50312)
+**QIE Integration:**
+- ✅ Deployed on QIE Testnet (Chain ID: 1983)
 - ✅ Smart contracts live and verified
 - ✅ Events emitting correctly
-- ✅ All transactions verifiable on explorer
+- ✅ All transactions verifiable on QIE Explorer
+- ✅ NFT minting working for all games
 
 **Potential Impact:**
-- Production-ready casino platform
-- Perfect showcase for SDS real-time gaming use case
+- Production-ready casino platform on QIE Blockchain
+- Perfect showcase for QIE Blockchain gaming use case
 - Scalable architecture for thousands of concurrent players
 - Well-documented for ecosystem learning
 
 ## 📚 Additional Documentation
 
 ### Service Documentation
-- [Somnia Streams Service](./src/services/SOMNIA_STREAMS_SERVICE_README.md) - Detailed service implementation
-- [Game Logger Service](./src/services/GAME_LOGGER_README.md) - On-chain logging details
+- [QIE Game Logger Service](./src/services/QIEGameLogger.js) - On-chain logging details
+- [QIE Game NFT Service](./src/services/QIEGameNFT.js) - NFT minting details
+- [QIE Blockchain Architecture](./QIE_BLOCKCHAIN_ARCHITECTURE.md) - Complete architecture documentation
 
 ## 🔧 Development
 
@@ -981,8 +1066,8 @@ npm run start
 npm test
 
 # Run specific test suite
-npm test -- SomniaGameLogger
-npm test -- SomniaStreamsService
+npm test -- QIEGameLogger
+npm test -- QIEGameNFT
 
 # Run with coverage
 npm test -- --coverage
@@ -994,11 +1079,11 @@ npm test -- --coverage
 # Verify Pyth Entropy (Arbitrum Sepolia)
 node scripts/verify-pyth-entropy.js
 
-# Verify Game Logger (Somnia Testnet)
+# Verify Game Logger (QIE Testnet)
 node scripts/verify-game-logger.js
 
-# Verify Data Streams
-node scripts/test-somnia-streams.js
+# Verify QIE integration
+node scripts/test-qie-integration.js
 
 # Verify all games
 node scripts/test-entropy-all-games.js
@@ -1015,27 +1100,40 @@ node scripts/verify-game-history-service.js
 ```
 apt-casino/
 ├── contracts/              # Smart contracts
-│   ├── SomniaTreasury.sol
-│   └── SomniaGameLogger.sol
+│   ├── QIETreasury.sol
+│   ├── QIEGameLogger.sol
+│   └── QIEGameNFT.sol
 ├── src/
 │   ├── app/               # Next.js pages
 │   ├── components/        # React components
 │   ├── config/            # Network and contract configs
+│   │   └── qieTestnetConfig.js
 │   ├── hooks/             # Custom React hooks
 │   ├── services/          # Business logic services
+│   │   ├── QIEGameLogger.js
+│   │   └── QIEGameNFT.js
 │   └── utils/             # Utility functions
 ├── scripts/               # Deployment and verification scripts
+│   ├── deploy-qie-contracts.js
+│   └── test-qie-integration.js
 ├── docs/                  # Documentation
 ├── deployments/           # Deployment artifacts
-└── somnia-streams/        # Somnia Streams SDK
+│   └── qie-contracts-*.json
 ```
 
 ## 🔗 Links & Resources
 
 ### Live Application
-- **Website Link**: [https://apt-casino-somnia.vercel.app/](https://apt-casino-somnia.vercel.app/)
-- **Live Demo**: [https://youtu.be/F-6Gsy1Qi1s](https://youtu.be/F-6Gsy1Qi1s)
-- **Pitch Deck**: [https://www.figma.com/deck/Q5MbzVrmnX4954oa1CkydC/APT-Casino-Somnia?node-id=1-1812&p=f&t=Kc0BblSLdau5HO3b-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1](https://www.figma.com/deck/Q5MbzVrmnX4954oa1CkydC/APT-Casino-Somnia?node-id=1-1812&p=f&t=Kc0BblSLdau5HO3b-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1)
-- **Contract Links**: 
-  - https://shannon-explorer.somnia.network/address/0x649A1a3cf745d60C98C12f3c404E09bdBb4151db?tab=contract
-  - https://shannon-explorer.somnia.network/address/0xacA996A4d49e7Ed42dA68a20600F249BE6d024A4?tab=contract
+- **Website Link**: [https://apt-casino-eta.vercel.app/](https://apt-casino-eta.vercel.app/)
+- **Live Demo**: []()
+- **Pitch Deck**: []()
+- **Contract Links (QIE Testnet)**: 
+  - **QIETreasury**: https://testnet.qie.digital/address/0xacA996A4d49e7Ed42dA68a20600F249BE6d024A4
+  - **QIEGameLogger**: https://testnet.qie.digital/address/0x649A1a3cf745d60C98C12f3c404E09bdBb4151db
+  - **QIEGameNFT**: https://testnet.qie.digital/address/0x7F0e5E8B2332F446eDa6488Cba4f4F159efE7F2E
+
+### Network Information
+- **QIE Testnet Explorer**: https://testnet.qie.digital
+- **QIE Testnet RPC**: https://rpc1testnet.qie.digital/
+- **Chain ID**: 1983
+- **Currency**: QIE
