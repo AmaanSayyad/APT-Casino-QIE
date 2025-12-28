@@ -558,7 +558,355 @@ flowchart TD
     J --> K[Process Game Outcomes]
     
     K --> L[Update Balances]
-    L --> M[Display Results]
+    L --> M[Mint Game Result NFT]
+    M --> N[Log Game Result]
+    N --> O[Display Results + NFT]
+```
+
+## 🎨 Game Result NFT Architecture
+
+Every game result is automatically minted as an ERC-721 NFT on QIE Blockchain. This section details the complete NFT architecture and flow.
+
+### 🎯 NFT Use Case in Gaming
+
+NFTs in APT Casino serve multiple critical purposes that enhance the gaming experience and solve real problems:
+
+#### 1. **Permanent Proof of Achievement** 🏆
+- Every game result is minted as a unique NFT, creating an immutable record of your gaming history
+- Players can prove their wins, track their progress, and showcase achievements
+- No centralized database can delete or modify your gaming records
+
+#### 2. **Provably Fair Verification** ✅
+- Each NFT contains a link to the entropy transaction hash (Pyth Entropy proof)
+- Players can verify that game results were truly random and fair
+- Complete transparency: every outcome is verifiable on-chain
+
+#### 3. **Gaming History Collection** 📚
+- Build a personal collection of all your gaming moments
+- Filter by game type (Roulette, Mines, Wheel, Plinko)
+- Track wins vs losses, multipliers achieved, and total earnings
+- View complete statistics from your NFT collection
+
+#### 4. **Social Sharing & Bragging Rights** 📱
+- Share your biggest wins as NFTs on social media
+- Each NFT has a unique explorer link that can be shared
+- Show off rare multipliers or consecutive wins
+- Create a verifiable gaming reputation
+
+#### 5. **True Digital Ownership** 💎
+- You truly own your gaming achievements (not the casino)
+- NFTs are stored in your wallet, not a centralized database
+- Transferable assets (future: trade or sell rare gaming moments)
+- Cannot be frozen, deleted, or confiscated
+
+#### 6. **Gamification & Engagement** 🎮
+- Collect NFTs from different games to complete your collection
+- Rare multipliers create "legendary" NFTs
+- Achievement system based on NFT milestones
+- Competitive element: compare collections with other players
+
+#### 7. **On-Chain Metadata** 📋
+Each NFT contains rich metadata stored on-chain:
+- **Game Type**: Roulette, Mines, Wheel, or Plinko
+- **Bet Amount**: How much you wagered
+- **Payout**: How much you won
+- **Multiplier**: The multiplier achieved (e.g., "2.5x", "10x")
+- **Win/Loss Status**: Whether the game was won
+- **Timestamp**: When the game was played
+- **Entropy Proof**: Link to verifiable randomness transaction
+- **Visual Image**: Unique NFT image for display
+
+#### 8. **Future Use Cases** 🚀
+- **NFT Marketplace**: Trade rare gaming moments
+- **Tournament Rewards**: Special NFTs for tournament winners
+- **Achievement Badges**: Unlock special NFTs for milestones
+- **Staking**: Stake NFTs for rewards or bonuses
+- **Cross-Game Integration**: Use NFTs across different games
+
+### 🏗️ NFT Minting Flow
+
+```mermaid
+flowchart TB
+    subgraph Game["🎮 Game Completion"]
+        A[Player Completes Game] --> B[Game Result Calculated]
+        B --> C[Pyth Entropy Proof Generated]
+        C --> D[Game Metadata Prepared]
+    end
+    
+    subgraph API["🔌 API Layer"]
+        D --> E[POST /api/log-game]
+        E --> F[Transaction Queue Service]
+        F --> G[Queue NFT Mint Transaction]
+        F --> H[Queue Game Log Transaction]
+    end
+    
+    subgraph QIE["⛓️ QIE Blockchain"]
+        G --> I[QIEGameNFT Contract]
+        I --> J[mintGameNFT Function]
+        J --> K[Generate Metadata URI]
+        K --> L[Create ERC-721 Token]
+        L --> M[NFT Minted - Token ID Returned]
+        
+        H --> N[QIEGameLogger Contract]
+        M --> N
+        N --> O[logGameResult with NFT Token ID]
+        O --> P[Game Logged on Blockchain]
+    end
+    
+    subgraph Metadata["📋 NFT Metadata"]
+        K --> Q[Game Type]
+        K --> R[Bet Amount]
+        K --> S[Payout Amount]
+        K --> T[Multiplier]
+        K --> U[Win/Loss Status]
+        K --> V[Entropy TX Hash]
+        K --> W[Timestamp]
+        K --> X[Image/Visual]
+    end
+    
+    subgraph Player["👤 Player Experience"]
+        M --> Y[NFT Available in Collection]
+        P --> Z[Game Log Available]
+        Y --> AA[View on QIE Explorer]
+        Z --> AA
+        AA --> AB[Share NFT Achievement]
+    end
+    
+    style I fill:#e1f5ff
+    style N fill:#e1f5ff
+    style M fill:#90ee90
+    style P fill:#90ee90
+```
+
+### 🔄 Complete NFT Lifecycle
+
+```mermaid
+sequenceDiagram
+    participant Player
+    participant Game
+    participant API
+    participant Queue as Transaction Queue
+    participant NFT as QIEGameNFT Contract
+    participant Logger as QIEGameLogger Contract
+    participant QIE as QIE Blockchain
+    participant Explorer as QIE Explorer
+
+    Player->>Game: Play Game (Roulette/Wheel/Plinko/Mines)
+    Game->>Game: Calculate Result with Pyth Entropy
+    Game->>API: POST /api/log-game<br/>{gameType, betAmount, payout, result, entropyProof}
+    
+    API->>Queue: Queue NFT Mint Transaction
+    API->>Queue: Queue Game Log Transaction
+    API-->>Game: Return Transaction IDs (Immediate Response)
+    
+    Note over Queue: Process Transactions Sequentially
+    
+    Queue->>NFT: mintGameNFT(<br/>player, gameType, betAmount,<br/>payout, multiplier, isWin,<br/>entropyTxHash, metadataURI)
+    
+    NFT->>NFT: Generate Token ID
+    NFT->>NFT: Store Metadata on-chain
+    NFT->>QIE: Mint ERC-721 Token
+    QIE-->>NFT: Token ID
+    NFT-->>Queue: Return Token ID
+    
+    Queue->>Logger: logGameResult(<br/>player, gameType, betAmount,<br/>resultData, payout,<br/>entropyRequestId, entropyTxHash,<br/>nftTokenId)
+    
+    Logger->>QIE: Store Game Log with NFT Reference
+    QIE-->>Logger: Log ID + Transaction Hash
+    Logger-->>Queue: Return Log ID
+    
+    Queue-->>API: Both Transactions Confirmed
+    API-->>Game: NFT Token ID + Log ID + TX Hashes
+    
+    Game->>Player: Display Result + NFT Link
+    
+    Player->>Explorer: View NFT Collection
+    Player->>Explorer: View Game Log
+    Player->>Player: Share NFT Achievement
+```
+
+### 📊 NFT Metadata Structure
+
+```mermaid
+graph LR
+    subgraph NFTMetadata["🎨 NFT Metadata (ERC-721)"]
+        A[Token ID] --> B[Player Address]
+        B --> C[Game Type]
+        C --> D[Bet Amount]
+        D --> E[Payout Amount]
+        E --> F[Multiplier]
+        F --> G[Win/Loss Status]
+        G --> H[Entropy TX Hash]
+        H --> I[Timestamp]
+        I --> J[Metadata URI]
+        J --> K[Image/Visual]
+    end
+    
+    subgraph OnChain["⛓️ On-Chain Storage"]
+        L[QIEGameNFT Contract] --> M[tokenId → Metadata Mapping]
+        M --> N[player → tokenIds[] Mapping]
+        N --> O[totalSupply Counter]
+    end
+    
+    subgraph Explorer["🔍 QIE Explorer"]
+        P[NFT View] --> Q[Metadata Display]
+        Q --> R[Transaction History]
+        R --> S[Player Collection]
+    end
+    
+    A --> L
+    J --> P
+```
+
+### 🎯 NFT Collection Management
+
+```mermaid
+flowchart TD
+    subgraph PlayerCollection["👤 Player NFT Collection"]
+        A[Player Address] --> B[Query getPlayerNFTs]
+        B --> C[Array of Token IDs]
+        C --> D[For Each Token ID]
+        D --> E[getNFTMetadata]
+        E --> F[NFT Details]
+    end
+    
+    subgraph NFTDetails["📋 NFT Details"]
+        F --> G[Game Type]
+        F --> H[Bet Amount]
+        F --> I[Payout]
+        F --> J[Multiplier]
+        F --> K[Win/Loss]
+        F --> L[Timestamp]
+        F --> M[Entropy Proof]
+        F --> N[Metadata URI]
+    end
+    
+    subgraph Display["🖼️ Display Options"]
+        G --> O[NFT Gallery View]
+        H --> O
+        I --> O
+        J --> O
+        K --> O
+        L --> O
+        M --> P[Verification Link]
+        N --> Q[Image Display]
+    end
+    
+    subgraph Actions["⚡ Player Actions"]
+        O --> R[View on Explorer]
+        O --> S[Share NFT]
+        O --> T[Filter by Game Type]
+        O --> U[Filter by Win/Loss]
+        P --> V[Verify Entropy Proof]
+    end
+    
+    style A fill:#e1f5ff
+    style F fill:#90ee90
+    style O fill:#ffd700
+```
+
+### 🔗 NFT Contract Integration
+
+```mermaid
+classDiagram
+    class QIEGameNFT {
+        +mintGameNFT() uint256
+        +getNFTMetadata() Metadata
+        +getPlayerNFTs() uint256[]
+        +getPlayerNFTCount() uint256
+        +tokenURI() string
+        +ownerOf() address
+        +totalSupply() uint256
+        +GameNFTMinted event
+    }
+    
+    class QIEGameLogger {
+        +logGameResult() bytes32
+        +getGameLog() GameLog
+        +getPlayerHistory() bytes32[]
+        +GameResultLogged event
+    }
+    
+    class NFTMetadata {
+        +tokenId uint256
+        +player address
+        +gameType string
+        +betAmount uint256
+        +payout uint256
+        +multiplier string
+        +isWin bool
+        +timestamp uint256
+        +entropyTxHash string
+        +metadataURI string
+    }
+    
+    class GameLog {
+        +logId bytes32
+        +player address
+        +gameType uint8
+        +betAmount uint256
+        +payout uint256
+        +nftTokenId uint256
+        +entropyRequestId bytes32
+        +entropyTxHash string
+        +timestamp uint256
+    }
+    
+    QIEGameNFT --> NFTMetadata : stores
+    QIEGameLogger --> GameLog : stores
+    GameLog --> QIEGameNFT : references nftTokenId
+    QIEGameNFT ..> QIEGameLogger : provides tokenId for logging
+```
+
+### 💡 Real-World Example: How NFTs Enhance Gaming
+
+**Scenario**: Player completes a Roulette game with a 10x multiplier win
+
+1. **Game Completion**:
+   - Player bets 1 QIE on number 7
+   - Ball lands on 7
+   - Payout: 10 QIE (10x multiplier)
+
+2. **Automatic NFT Minting**:
+   - System automatically mints NFT #1234
+   - NFT contains: Game Type (ROULETTE), Bet (1 QIE), Payout (10 QIE), Multiplier (10x), Win Status (true)
+   - NFT is transferred to player's wallet
+
+3. **Player Experience**:
+   - Player sees notification: "🎉 You won! NFT #1234 minted"
+   - Click to view NFT on QIE Explorer
+   - See complete game details and entropy proof
+   - Share achievement: "Just hit a 10x on Roulette! Check my NFT: [link]"
+
+4. **Collection Building**:
+   - Player views their NFT collection
+   - See all 50 games played as NFTs
+   - Filter: "Show only wins" → 20 NFTs
+   - Filter: "Show only 10x+ multipliers" → 3 rare NFTs
+   - Share collection: "I've won 20 games with 3 legendary multipliers!"
+
+5. **Verification**:
+   - Anyone can verify the win by checking the NFT on QIE Explorer
+   - Entropy proof link shows the randomness was fair
+   - Complete transparency and trust
+
+### 🎮 NFT Integration in Game UI
+
+Players interact with NFTs directly in the game interface:
+
+- **Game History Tab**: Shows all games with NFT links
+- **NFT Badge**: Each completed game shows an NFT icon
+- **Click to View**: Opens NFT on QIE Explorer
+- **Collection View**: Browse all your NFTs in one place
+- **Statistics**: Calculate stats from your NFT collection
+- **Share Button**: Share your best NFTs on social media
+
+**Example UI Flow**:
+```
+Game Complete → "NFT Minted!" notification → 
+Click NFT icon → Opens QIE Explorer → 
+View NFT details → Share link → 
+Friends verify your win on-chain
 ```
 
 ## 🔮 Future Roadmap
