@@ -1392,6 +1392,40 @@ apt-casino/
 
 ## 🔗 Links & Resources
 
+### 🎨 Quick NFT Guide
+
+Every game you play automatically mints an NFT on QIE Blockchain. Here's how it works:
+
+**1. Play Any Game** → Roulette, Wheel, Plinko, or Mines
+
+**2. Automatic NFT Minting** → When game completes:
+- Random image selected from 4 unique designs
+- Metadata includes: game type, bet, payout, multiplier, win/loss
+- NFT transferred to your wallet
+
+**3. View Your NFTs** → Check QIE Explorer:
+```
+https://testnet.qie.digital/address/YOUR_WALLET_ADDRESS
+```
+
+**NFT Contract**: `0x7F0e5E8B2332F446eDa6488Cba4f4F159efE7F2E`
+
+**What's Stored On-Chain:**
+- Game Type (ROULETTE, MINES, WHEEL, PLINKO)
+- Bet Amount & Payout
+- Multiplier achieved
+- Win/Loss status
+- Entropy proof (Pyth transaction hash)
+- Timestamp
+- Unique image URL
+
+**Why NFTs?**
+- ✅ Permanent proof of your gaming achievements
+- ✅ Verifiable fair play (linked to entropy proof)
+- ✅ Build your gaming collection
+- ✅ Share wins on social media
+- ✅ True ownership (in your wallet, not casino's database)
+
 ### Live Application
 - **Website Link**: [https://apt-casino-eta.vercel.app/](https://apt-casino-eta.vercel.app/)
 - **Live Demo**: []()
