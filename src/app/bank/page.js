@@ -13,7 +13,7 @@ const BORROW_ASSETS = {
   ethereum_testnet: [
     {
       symbol: "QIE",
-      name: "Somnia Testnet Network Coin",
+      name: "QIE Testnet Network Coin",
       iconColor: "#F1324D",
       address: null // Native token
     }
@@ -67,7 +67,7 @@ export default function Bank() {
       setAssets([
         {
           symbol: "QIE",
-          name: "Somnia Testnet Network Coin",
+          name: "QIE Testnet Network Coin",
           iconColor: "#F1324D",
           address: "0x...",
           apr: "12.5%",
@@ -111,7 +111,7 @@ export default function Bank() {
         setAssets([
           {
             symbol: "QIE",
-            name: "Somnia Testnet Network Coin",
+            name: "QIE Testnet Network Coin",
             iconColor: "#F1324D",
             address: "0x...",
             apr: "12.5%",
@@ -190,7 +190,7 @@ export default function Bank() {
         {showNetworkBanner && (
           <div className="bg-gradient-to-r from-red-magic/80 to-blue-magic/80 py-2 px-4 text-center relative mb-8 rounded-lg">
             <p className="text-white text-sm">
-              Connected to Somnia Testnet Network Testnet. 
+              Connected to QIE Testnet Network. 
               <button className="underline ml-2">Switch Network</button>
             </p>
             <button 
@@ -247,8 +247,8 @@ export default function Bank() {
                 <div className="bg-gradient-to-r p-[1px] from-red-magic to-blue-magic rounded-xl">
                   {/* Ethereum Testnet Only - No Uniswap Integration */}
         <div className="bg-gray-800 rounded-lg p-6 text-center">
-          <h3 className="text-xl font-semibold text-white mb-2">Somnia Testnet Network Testnet Only</h3>
-          <p className="text-gray-400">This application works exclusively with Somnia Testnet Network Testnet</p>
+          <h3 className="text-xl font-semibold text-white mb-2">QIE Testnet Network Only</h3>
+          <p className="text-gray-400">This application works exclusively with QIE Testnet Network</p>
         </div>
                 </div>
               </div>

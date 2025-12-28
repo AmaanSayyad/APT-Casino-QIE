@@ -74,7 +74,8 @@ module.exports = {
     apiKey: {
       arbitrumSepolia: process.env.ARBISCAN_API_KEY || "",
       arbitrumOne: process.env.ARBISCAN_API_KEY || "",
-      'somnia-testnet-testnet': "abc" // Blockscout doesn't require API key
+      'somnia-testnet-testnet': "abc", // Blockscout doesn't require API key
+      'qie-testnet': "abc" // QIE Explorer doesn't require API key
     },
     customChains: [
       {
@@ -83,6 +84,14 @@ module.exports = {
         urls: {
           apiURL: "https://shannon-explorer.somnia.network/api",
           browserURL: "https://shannon-explorer.somnia.network"
+        }
+      },
+      {
+        network: "qie-testnet",
+        chainId: 1983,
+        urls: {
+          apiURL: "https://testnet.qie.digital/api",
+          browserURL: "https://testnet.qie.digital"
         }
       }
     ]
