@@ -1428,8 +1428,8 @@ https://testnet.qie.digital/address/YOUR_WALLET_ADDRESS
 
 ### Live Application
 - **Website Link**: [https://apt-casino-eta.vercel.app/](https://apt-casino-eta.vercel.app/)
-- **Live Demo**: []()
-- **Pitch Deck**: []()
+- **Live Demo**: [https://youtu.be/kwqKVWA8eO0](https://youtu.be/kwqKVWA8eO0)
+- **Pitch Deck**: [https://www.figma.com/deck/4tJS8h0nvC2JMsSAW8Odwq/APT-Casino-QIE?node-id=1-1812&p=f&t=3tTNbJXdM34hHMR0-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1](https://www.figma.com/deck/4tJS8h0nvC2JMsSAW8Odwq/APT-Casino-QIE?node-id=1-1812&p=f&t=3tTNbJXdM34hHMR0-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1)
 - **Contract Links (QIE Testnet)**: 
   - **QIETreasury**: https://testnet.qie.digital/address/0xacA996A4d49e7Ed42dA68a20600F249BE6d024A4
   - **QIEGameLogger**: https://testnet.qie.digital/address/0x649A1a3cf745d60C98C12f3c404E09bdBb4151db
